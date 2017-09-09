@@ -7,15 +7,15 @@ import com.luoruiyong.weblog.base.BaseModel;
  */
 
 public class Blog extends BaseModel{
-    public static final String ID = "id";
-    public static final String AUTHOR = "author";
-    public static final String AUTHOR_ID = "authorid";
-    public static final String AUTHOR_FACE_URL = "faceurl";
-    public static final String CONTENT = "content";
-    public static final String COMMENT_COUNT = "commentcount";
-    public static final String PRAISE_COUNT = "praisecount";
-    public static final String TRANSMIT_COUNT = "transmitcount";
-    public static final String CREATE_TIME = "createtime";
+    public static final String ID = "id";    //微博id
+    public static final String AUTHOR = "author";   //撰写者昵称
+    public static final String AUTHOR_ID = "authorid";  //撰写者id
+    public static final String AUTHOR_FACE_URL = "faceurl";  //撰写者头像
+    public static final String CONTENT = "content";   //微博正文
+    public static final String COMMENT_COUNT = "commentcount";  //评论数
+    public static final String PRAISE_COUNT = "praisecount";   //点赞数
+    public static final String TRANSMIT_COUNT = "transmitcount";  //转发数
+    public static final String CREATE_TIME = "createtime";   //撰写时间
 
     private String id;
     private String author;

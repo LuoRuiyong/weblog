@@ -9,7 +9,7 @@ import android.net.NetworkInfo;
  */
 
 public class NetworkUtil {
-
+    private static final String CLASS_NAME = NetworkUtil.class.getSimpleName() + "-->";
     private static int type;
 
     public static final class TYPE{
@@ -28,13 +28,16 @@ public class NetworkUtil {
         NetworkInfo info = manager.getActiveNetworkInfo();
         if(info == null || !info.isConnected()){
             type = TYPE.NONE;
+            LogUtil.d(CLASS_NAME+"手机无网络连接");
         }else{
             switch (info.getType()){
                 case ConnectivityManager.TYPE_MOBILE:
                     type = TYPE.MOBILE;
+                    LogUtil.d(CLASS_NAME+"手机使用移动网络连接");
                     break;
                 case ConnectivityManager.TYPE_WIFI:
                     type = TYPE.WIFI;
+                    LogUtil.d(CLASS_NAME+"手机使用wifi网络连接");
                     break;
             }
         }

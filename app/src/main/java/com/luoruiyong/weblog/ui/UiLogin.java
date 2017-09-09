@@ -2,7 +2,6 @@ package com.luoruiyong.weblog.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,14 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.luoruiyong.weblog.R;
+import com.luoruiyong.weblog.base.BaseUi;
+import com.luoruiyong.weblog.base.C;
 import com.luoruiyong.weblog.util.LogUtil;
+
+import java.util.HashMap;
 
 /**登录界面控制器
  * Created by Administrator on 2017/9/7.
  */
 
-public class UiLogin extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
-
+public class UiLogin extends BaseUi implements CompoundButton.OnCheckedChangeListener{
+    private static final String CLASS_NAME = UiLogin.class.getSimpleName() + "-->";
     private Button btn_login;
     private EditText et_account;
     private EditText et_password;
@@ -34,7 +37,7 @@ public class UiLogin extends AppCompatActivity implements CompoundButton.OnCheck
     private MyOnClickListener listener;
     private MyTextWatcher textWatcher;
     private Toolbar toolbar;
-    private static final String TAG = "UiLogin";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class UiLogin extends AppCompatActivity implements CompoundButton.OnCheck
     }
 
     private void bindControl() {
-        LogUtil.d(TAG,"绑定控件");
+        LogUtil.d(CLASS_NAME+"绑定控件");
         toolbar = (Toolbar) findViewById(R.id.toorbar);
         toolbar.setTitle("登录");
         setSupportActionBar(toolbar);
@@ -125,8 +128,23 @@ public class UiLogin extends AppCompatActivity implements CompoundButton.OnCheck
      * 登录
      */
     private void login() {
-
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                AppClient client = new AppClient(UiLogin.this,"http://112.74.13.186:8001/index/login");
+//                try {
+//                    client.get();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+        HashMap<String,String> map = new HashMap<>();
+        map.put("name","james");
+        map.put("pass","james");
+        doAsyncTask(1, C.api.login,map,0);
     }
+
 
     /**
      * 通过手机验证找回密码

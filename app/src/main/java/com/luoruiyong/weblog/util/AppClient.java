@@ -1,7 +1,8 @@
 package com.luoruiyong.weblog.util;
 
+import android.content.Context;
+
 import com.luoruiyong.weblog.base.C;
-import com.luoruiyong.weblog.model.Customer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,7 +12,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -34,12 +34,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**网络通讯类
+/**网络通讯类,封装了Http请求
  * Created by Administrator on 2017/9/7.
  */
 
 public class AppClient {
-
+    private static final String CLASS_NAME = AppClient.class.getSimpleName() + "-->";
     private static final int CS_NONE = 0;
     private static final int CS_GZIP = 1;
     private static final int CONNECTIMEOUT = 2*1000;
@@ -47,13 +47,16 @@ public class AppClient {
     private String charset = HTTP.UTF_8;    //默认编码
     private int compress = CS_NONE;   //默认压缩方式
     private String apiUrl;
+    private Context context;
     private HttpClient httpClient;
 
-    public AppClient(String apiUrl) {
+    public AppClient(Context context,String apiUrl) {
+        this.context = context;
         initUrl(apiUrl);
     }
 
-    public AppClient(String apiUrl, String charset) {
+    public AppClient(Context context,String apiUrl, String charset) {
+        this.context = context;
         this.charset = charset;
         initUrl(apiUrl);
     }
@@ -63,8 +66,8 @@ public class AppClient {
      * @param apiUrl 接口路径资源
      */
     private void initUrl(String apiUrl) {
-        this.apiUrl = C.api.base + apiUrl;
-        String sid  = Customer.getInstance().getSid();
+        this.apiUrl = apiUrl;
+        String sid  = AppUtil.getSessionId();
         if(sid != null){
             this.apiUrl = this.apiUrl + "?sid=" + sid;
         }
@@ -80,14 +83,18 @@ public class AppClient {
      * @throws Exception  网络错误
      */
     public String get() throws Exception{
+        //判断网络状态
+        if(NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+            throw new Exception(C.err.network);
+        }
         HttpResponse response = null;
-        HttpGet httpGet = new HttpGet(this.apiUrl);
+        HttpGet httpGet = headerFilter(new HttpGet(this.apiUrl));
         try{
-            LogUtil.d("AppClient.get.url" ,this.apiUrl);
+            LogUtil.d(CLASS_NAME+"get.url="+this.apiUrl);
             response = httpClient.execute(httpGet);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-                String result = EntityUtils.toString(response.getEntity());
-                LogUtil.d("AppClient.get.result" ,result);
+                String result = resultFilter(response.getEntity());
+                LogUtil.d(CLASS_NAME+"get.result="+result);
                 return result;
             }else{
                 return null;
@@ -95,7 +102,7 @@ public class AppClient {
         }catch (ConnectionPoolTimeoutException e){
             throw new Exception(C.err.network);
         }catch (IOException e){
-            LogUtil.d("Exception",e.getMessage());
+            LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
         }
         return null;
     }
@@ -107,6 +114,9 @@ public class AppClient {
      * @throws Exception  网络错误
      */
     public String post(HashMap<String,String> params) throws Exception{
+        if(NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+            throw new Exception(C.err.network);
+        }
         List<NameValuePair> postParams = new ArrayList<>();
         HttpPost httpPost = new HttpPost(this.apiUrl);
         HttpResponse response ;
@@ -117,25 +127,28 @@ public class AppClient {
         }
         httpPost.setEntity(new UrlEncodedFormEntity(postParams,charset));
         try{
-            LogUtil.d("AppClient.post.url" ,this.apiUrl);
-            LogUtil.d("AppClient.post.params" ,postParams.toString());
+            LogUtil.d(CLASS_NAME+"post.url="+this.apiUrl);
+            LogUtil.d(CLASS_NAME+"post.params="+postParams.toString());
             response = httpClient.execute(httpPost);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-                String result =  EntityUtils.toString(response.getEntity());
-                LogUtil.d("AppClient.post.result" , result);
+                String result = resultFilter(response.getEntity());
+                LogUtil.d(CLASS_NAME+"post.result="+result);
                 return result;
             }else{
                 return null;
             }
-        }catch (ConnectTimeoutException e){
+        }catch (ConnectionPoolTimeoutException e){
             throw new Exception(C.err.network);
         }catch (IOException e) {
-            LogUtil.d("Exception", e.getMessage());
+            LogUtil.d(CLASS_NAME+ "Exception:"+e.getMessage());
         }
         return null;
     }
 
     public String post(HashMap<String,String> params,List<NameValuePair> files) throws Exception{
+        if(NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+            throw new Exception(C.err.network);
+        }
         List<NameValuePair> postParams = new ArrayList<>();
         HttpPost httpPost = new HttpPost(this.apiUrl);
         HttpResponse response ;
@@ -164,20 +177,20 @@ public class AppClient {
         }
         httpPost.setEntity(mpEntity);
         try{
-            LogUtil.d("AppClient.post.files.url" ,this.apiUrl);
-            LogUtil.d("AppClient.post.files.params" ,mpEntity.toString());
+            LogUtil.d(CLASS_NAME+"post.files.url="+this.apiUrl);
+            LogUtil.d(CLASS_NAME+"post.files.params="+mpEntity.toString());
             response = httpClient.execute(httpPost);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-                String result =  EntityUtils.toString(response.getEntity());
-                LogUtil.d("AppClient.post.files.result" , result);
+                String result = resultFilter(response.getEntity());
+                LogUtil.d(CLASS_NAME+"post.files.result="+ result);
                 return result;
             }else{
                 return null;
             }
-        }catch (ConnectTimeoutException e){
+        }catch (ConnectionPoolTimeoutException e){
             throw new Exception(C.err.network);
         }catch (IOException e) {
-            LogUtil.d("Exception", e.getMessage());
+            LogUtil.d( CLASS_NAME+"Exception:"+e.getMessage());
         }
         return null;
     }
@@ -190,10 +203,10 @@ public class AppClient {
     private HttpGet headerFilter(HttpGet httpGet){
         switch (this.compress){
             case CS_GZIP:
-
+                httpGet.addHeader("Accept-Encoding","gzip");
                 break;
             case CS_NONE:
-
+                //do nothing
                 break;
         }
         return  httpGet;
@@ -207,10 +220,10 @@ public class AppClient {
     private HttpPost headerFilter(HttpPost httpPost){
         switch (this.compress){
             case CS_GZIP:
-
+                httpPost.addHeader("Accept-Encoding","gzip");
                 break;
             case CS_NONE:
-
+                //do nothing
                 break;
         }
         return  httpPost;
@@ -225,10 +238,18 @@ public class AppClient {
         String result = null;
         switch (this.compress){
             case CS_NONE:
-
+                try {
+                    result = EntityUtils.toString(entity);
+                }catch (IOException e){
+                    LogUtil.d(CLASS_NAME+"IOException:"+e.getMessage());
+                }
                 break;
             case CS_GZIP:
-
+                try{
+                    result = AppUtil.gzipToString(entity,this.charset);
+                }catch(Exception e){
+                    LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
+                }
                 break;
         }
         return result;

@@ -1,5 +1,8 @@
 package com.luoruiyong.weblog.base;
 
+import android.content.Context;
+
+import com.luoruiyong.weblog.util.AppClient;
 import com.luoruiyong.weblog.util.LogUtil;
 
 import org.apache.http.NameValuePair;
@@ -14,9 +17,13 @@ import java.util.concurrent.Executors;
  */
 
 public class BaseTaskPool {
+
+    private final static String CLASS_NAME = BaseTaskPool.class.getSimpleName() + "-->";
     private ExecutorService taskPool;
-    private String TAG = "BaseTaskPool";
-    public BaseTaskPool() {
+    private Context context;
+
+    public BaseTaskPool(Context context) {
+        this.context = context;
         this.taskPool = Executors.newCachedThreadPool();
     }
 
@@ -31,10 +38,10 @@ public class BaseTaskPool {
         baseTask.setName("本地任务");
         try{
             taskPool.execute(new TaskThread(null,null,null,baseTask,delaytime));
-            LogUtil.d(TAG, "Add a local task to the taskPool");
+            LogUtil.d(CLASS_NAME+"开始id为"+baseTask.getId()+"的"+baseTask.getName());
         }catch (Exception e){
             taskPool.shutdown();
-            LogUtil.d(TAG,e.getMessage()+"  taskPool has shutdown");
+            LogUtil.d(CLASS_NAME+e.getMessage()+"  taskPool has shutdown");
         }
     }
 
@@ -50,10 +57,10 @@ public class BaseTaskPool {
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,null,null,baseTask,delaytime));
-            LogUtil.d(TAG, "Add a net task to the taskPool");
+            LogUtil.d(CLASS_NAME+"开始id为"+baseTask.getId()+"的"+baseTask.getName());
         }catch (Exception e){
             taskPool.shutdown();
-            LogUtil.d(TAG,e.getMessage()+"  taskPool has shutdown");
+            LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
         }
     }
 
@@ -70,10 +77,10 @@ public class BaseTaskPool {
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,taskParams,null,baseTask,delaytime));
-            LogUtil.d(TAG, "Add a net task to the taskPool");
+            LogUtil.d(CLASS_NAME+"开始id为"+baseTask.getId()+"的"+baseTask.getName());
         }catch (Exception e){
             taskPool.shutdown();
-            LogUtil.d(TAG,e.getMessage()+"  taskPool has shutdown");
+            LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
         }
     }
 
@@ -91,10 +98,10 @@ public class BaseTaskPool {
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,taskParams,taskFiles,baseTask,delaytime));
-            LogUtil.d(TAG, "Add a net task to the taskPool");
+            LogUtil.d( CLASS_NAME+"开始id为"+baseTask.getId()+"的"+baseTask.getName());
         }catch (Exception e){
             taskPool.shutdown();
-            LogUtil.d(TAG,e.getMessage()+"  taskPool has shutdown");
+            LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
         }
     }
 
@@ -127,9 +134,22 @@ public class BaseTaskPool {
                 try{
                     if(this.taskUrl != null){
                         //远程访问任务
-
+                        AppClient client = new AppClient(context,taskUrl);
+                        if(params != null || taskFiles != null){
+                            //有请求参数，使用post请求
+                            if(taskFiles != null){
+                                //有请求参数，也有文件
+                                httpRequest = client.post(params,taskFiles);
+                            }else{
+                                httpRequest = client.post(params);
+                            }
+                        }else{
+                            //无请求参数，使用get请求
+                            httpRequest = client.get();
+                        }
                     }else{
                         //本地任务
+                        //目前暂时不添加本地任务
                     }
                     if(httpRequest != null){
                         //远程任务
@@ -139,7 +159,7 @@ public class BaseTaskPool {
                         baseTask.onCompleteTask();
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
+                    LogUtil.d(CLASS_NAME+e.getMessage());
                     baseTask.onError(e.getMessage());
                 }
             }catch (Exception e){

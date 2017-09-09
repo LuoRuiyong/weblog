@@ -8,9 +8,15 @@ import com.luoruiyong.weblog.util.LogUtil;
  */
 
 public class BaseTask {
+    public static final int COMPLETE = 2;
+    public static final int PAUSE = 1;
+    public static final int START = 0;
+    public static final int STOP = 3;
+    public static final int ERROR = 4;
+
     private int id;
     private String name;
-    private String Tag = "BaseTask";
+    private String CLASS_NAME = BaseTask.class.getSimpleName() + "-->";
 
     public int getId() {
         return id;
@@ -29,26 +35,26 @@ public class BaseTask {
     }
 
     public void onStart(){
-        LogUtil.d(Tag,"onStart()");
+        LogUtil.d(CLASS_NAME+"onStart()");
     }
 
     public void onPause(){
-        LogUtil.d(Tag,"onPause()");
+        LogUtil.d(CLASS_NAME+"onPause()");
     }
 
     public void onStop() throws Exception{
-        LogUtil.d(Tag,"onStop()");
+        LogUtil.d(CLASS_NAME+"onStop()");
     }
 
     public void onCompleteTask(){
-        LogUtil.d(Tag,"onCompleteTask()");
+        LogUtil.d(CLASS_NAME+"onCompleteTask()");
     }
 
     public void onCompleteTask(String httpResponse){
-        LogUtil.d(Tag,"onCompleteTask  "+httpResponse);
+        LogUtil.d(CLASS_NAME+"onCompleteTask  "+httpResponse);
     }
 
     public void onError(String error){
-        LogUtil.d(Tag,"onError  "+error);
+        LogUtil.d(CLASS_NAME+"onError  "+error);
     }
 }

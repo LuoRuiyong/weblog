@@ -19,8 +19,7 @@ import com.luoruiyong.weblog.util.LogUtil;
  */
 
 public class UiAuthentication extends BaseUi {
-
-    private static final String TAG = "UiAuthentication";
+    private static final String CLASS_NAME = UiAuthentication.class.getSimpleName() + "-->";
     private EditText et_cell_number;
     private EditText et_auth_code;
     private Button btn_get_auth_code;
@@ -52,7 +51,7 @@ public class UiAuthentication extends BaseUi {
      * 绑定控件
      */
     private void bindControls() {
-        LogUtil.d(TAG,"绑定控件");
+        LogUtil.d(CLASS_NAME+"绑定控件");
         et_cell_number = (EditText) findViewById(R.id.cell_number);
         et_auth_code = (EditText) findViewById(R.id.auth_code);
         btn_do_auth = (Button) findViewById(R.id.do_auth);
@@ -70,7 +69,7 @@ public class UiAuthentication extends BaseUi {
      * 显示返回键
      */
     private void setToolbar() {
-        LogUtil.d(TAG,"初始化状态栏");
+        LogUtil.d(CLASS_NAME+"初始化状态栏");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toorbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("身份验证");
@@ -104,14 +103,14 @@ public class UiAuthentication extends BaseUi {
      * 向用户发送验证信息
      */
     private void sendMessageToUser() {
-        LogUtil.d(TAG,"向用户发送验证信息");
+        LogUtil.d(CLASS_NAME+"向用户发送验证信息");
     }
 
     /**
      * 向用户发送包含验证信息的邮件
      */
     private void sendEmailToUser() {
-        LogUtil.d(TAG,"向用户发送包含验证信息的邮件");
+        LogUtil.d(CLASS_NAME+"向用户发送包含验证信息的邮件");
 
     }
 
@@ -119,13 +118,13 @@ public class UiAuthentication extends BaseUi {
      * 身份验证
      */
     private void doauth() {
-        LogUtil.d(TAG,"身份验证");
+        LogUtil.d(CLASS_NAME+"身份验证");
     }
 
     /**
      * 使用邮箱验证方式
      */
     private void changeToEmailVerificationMode() {
-        LogUtil.d(TAG,"使用邮箱验证方式");
+        LogUtil.d(CLASS_NAME+"使用邮箱验证方式");
     }
 }

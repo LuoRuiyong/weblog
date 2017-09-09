@@ -20,7 +20,7 @@ import com.luoruiyong.weblog.util.LogUtil;
 
 public class UiSign extends BaseUi implements View.OnClickListener {
 
-    private static final String TAG = "UiSign";
+    private static final String CLASS_NAME = UiSign.class.getSimpleName() + "-->";
     private ImageView iv_user_icon;
     private EditText et_nickname;
     private EditText et_cell_number;
@@ -51,7 +51,7 @@ public class UiSign extends BaseUi implements View.OnClickListener {
      * 绑定控件并添加相应的监听事件
      */
     private void bindControls() {
-        LogUtil.d(TAG,"绑定控件");
+        LogUtil.d(CLASS_NAME+"绑定控件");
         setToolbar();
         et_nickname = (EditText) findViewById(R.id.nickname);
         et_cell_number = (EditText) findViewById(R.id.cell_number);
@@ -93,7 +93,7 @@ public class UiSign extends BaseUi implements View.OnClickListener {
      * 注册
      */
     private void createNewCustomer() {
-        LogUtil.d(TAG,"创建新用户");
+        LogUtil.d(CLASS_NAME+"创建新用户");
 
     }
 
@@ -101,6 +101,6 @@ public class UiSign extends BaseUi implements View.OnClickListener {
      * 从本地选择图片作为头像
      */
     private void chooseLocalIcon() {
-        LogUtil.d(TAG,"选择本地图片");
+        LogUtil.d(CLASS_NAME+"选择本地图片");
     }
 }
