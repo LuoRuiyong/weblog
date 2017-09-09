@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<litepal>
+    <dbname value="db_weblog_test"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.luoruiyong.weblog.model.Blog"/>
+        <mapping class="com.luoruiyong.weblog.model.Customer"/>
+        <mapping class="com.luoruiyong.weblog.model.Comment"/>
+        <mapping class="com.luoruiyong.weblog.model.Image"/>
+    </list>
+</litepal>
