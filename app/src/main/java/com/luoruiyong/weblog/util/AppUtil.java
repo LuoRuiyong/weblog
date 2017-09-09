@@ -3,12 +3,16 @@ package com.luoruiyong.weblog.util;
 import android.net.ParseException;
 import android.text.TextUtils;
 
+import com.luoruiyong.weblog.base.BaseMessage;
+import com.luoruiyong.weblog.base.C;
 import com.luoruiyong.weblog.model.Customer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.CharArrayBuffer;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,11 +63,34 @@ public class AppUtil {
     }
 
     /**
+     * 初步解析json数据，存放在BaseMessage中
+     * @param httpResult  服务器返回的数据
+     * @return  BaseMessage对象
+     * @throws Exception  json解析异常
+     */
+    public static BaseMessage getBaseMessageFromJson(String httpResult) throws Exception{
+        try{
+            JSONObject object = new JSONObject(httpResult);
+            BaseMessage message = new BaseMessage();
+            message.setCode(object.getString(BaseMessage.CODE));
+            message.setMessage(object.getString(BaseMessage.MESSAGE));
+            try{
+                message.setResult(object.getString(BaseMessage.RESULT));
+            }catch (Exception e){
+                throw e;
+            }
+            return message;
+        }catch (JSONException e) {
+            throw new Exception(C.err.jsonFormat);
+        }
+    }
+
+    /**
      * 首字符大写
      * @param str  待修改字符串
      * @return   修改结果
      */
-    public String ucFirst(String str){
+    public static String ucFirst(String str){
         if(!TextUtils.isEmpty(str)){
             str = str.substring(0,1).toUpperCase()+str.substring(1);
         }

@@ -164,12 +164,6 @@ public class BaseTaskPool {
                 }
             }catch (Exception e){
                 e.printStackTrace();
-            }finally {
-                try{
-                    baseTask.onStop();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
             }
         }
     }

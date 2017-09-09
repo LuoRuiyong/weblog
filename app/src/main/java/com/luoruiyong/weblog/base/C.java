@@ -104,5 +104,14 @@ public class C {
     public final static class err{
         public final static String network = "网络错误";
         public final static String server = "连接不到服务器";
+        public final static String jsonFormat = "JSON数据不匹配";
+        public final static String noData = "服务器返回结果为空";
+        public final static String modelError = "数据与模型不匹配";
+
+
+    }
+
+    public final static class model{
+        public final static String packageName = "com.luoruiyong.weblog.model.";
     }
 }

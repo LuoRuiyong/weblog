@@ -16,28 +16,14 @@ public class Customer extends BaseModel {
     public final static String CONCERN_COUNT = "concerncount";
 
     private String id;
-    private String sid; //会话id
-    private String nickname;
-    private String signtext;
-    private String faceurl; //头像资源在服务器中的路径
-    private String blogscount;
+    private String name;
+    private String sign;
+    private String face;
+    private String blogcount;
     private String fanscount;
-    private String concerncount;
-    private boolean login = false;
+    private String uptime;
+    private String sid;
     private static Customer customer = null;
-
-    public Customer() {}
-
-    public static Customer getInstance() {
-        if(customer == null){
-            customer = new Customer();
-        }
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
     public String getId() {
         return id;
@@ -47,44 +33,36 @@ public class Customer extends BaseModel {
         this.id = id;
     }
 
-    public String getSid() {
-        return sid;
+    public String getName() {
+        return name;
     }
 
-    public void setSid(String sid) {
-        this.sid = sid;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getSign() {
+        return sign;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 
-    public String getSigntext() {
-        return signtext;
+    public String getFace() {
+        return face;
     }
 
-    public void setSigntext(String signtext) {
-        this.signtext = signtext;
+    public void setFace(String face) {
+        this.face = face;
     }
 
-    public String getFaceurl() {
-        return faceurl;
+    public String getBlogcount() {
+        return blogcount;
     }
 
-    public void setFaceurl(String faceurl) {
-        this.faceurl = faceurl;
-    }
-
-    public String getBlogscount() {
-        return blogscount;
-    }
-
-    public void setBlogscount(String blogscount) {
-        this.blogscount = blogscount;
+    public void setBlogcount(String blogcount) {
+        this.blogcount = blogcount;
     }
 
     public String getFanscount() {
@@ -95,19 +73,121 @@ public class Customer extends BaseModel {
         this.fanscount = fanscount;
     }
 
-    public String getConcerncount() {
-        return concerncount;
+    public String getUptime() {
+        return uptime;
     }
 
-    public void setConcerncount(String concerncount) {
-        this.concerncount = concerncount;
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
     }
 
-    public boolean isLogin() {
-        return login;
+    public String getSid() {
+        return sid;
     }
 
-    public void setLogin(boolean login) {
-        this.login = login;
+    public void setSid(String sid) {
+        this.sid = sid;
     }
+
+    public static Customer getInstance(){
+        if(customer == null){
+            customer = new Customer();
+        }
+        return customer;
+    }
+    //    private String id;
+//    private String sid; //会话id
+//    private String nickname;
+//    private String signtext;
+//    private String faceurl; //头像资源在服务器中的路径
+//    private String blogscount;
+//    private String fanscount;
+//    private String concerncount;
+//    private boolean login = false;
+//    private static Customer customer = null;
+//
+//    public Customer() {}
+//
+//    public static Customer getInstance() {
+//        if(customer == null){
+//            customer = new Customer();
+//        }
+//        return customer;
+//    }
+//
+//    public void setCustomer(Customer customer) {
+//        this.customer = customer;
+//    }
+//
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public String getSid() {
+//        return sid;
+//    }
+//
+//    public void setSid(String sid) {
+//        this.sid = sid;
+//    }
+//
+//    public String getNickname() {
+//        return nickname;
+//    }
+//
+//    public void setNickname(String nickname) {
+//        this.nickname = nickname;
+//    }
+//
+//    public String getSigntext() {
+//        return signtext;
+//    }
+//
+//    public void setSigntext(String signtext) {
+//        this.signtext = signtext;
+//    }
+//
+//    public String getFaceurl() {
+//        return faceurl;
+//    }
+//
+//    public void setFaceurl(String faceurl) {
+//        this.faceurl = faceurl;
+//    }
+//
+//    public String getBlogscount() {
+//        return blogscount;
+//    }
+//
+//    public void setBlogscount(String blogscount) {
+//        this.blogscount = blogscount;
+//    }
+//
+//    public String getFanscount() {
+//        return fanscount;
+//    }
+//
+//    public void setFanscount(String fanscount) {
+//        this.fanscount = fanscount;
+//    }
+//
+//    public String getConcerncount() {
+//        return concerncount;
+//    }
+//
+//    public void setConcerncount(String concerncount) {
+//        this.concerncount = concerncount;
+//    }
+//
+//    public boolean isLogin() {
+//        return login;
+//    }
+//
+//    public void setLogin(boolean login) {
+//        this.login = login;
+//    }
 }

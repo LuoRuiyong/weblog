@@ -8,7 +8,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.luoruiyong.weblog.util.LogUtil;
 
 import org.apache.http.NameValuePair;
 
@@ -24,10 +27,12 @@ public class BaseUi extends AppCompatActivity {
     private final static String CLASS_NAME = BaseUi.class.getSimpleName() + "-->";
     protected BaseHandler handler;
     protected BaseTaskPool taskPool;
+    protected ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.progressBar = new ProgressBar(this);
         this.handler = new BaseHandler(this);
         this.taskPool = new BaseTaskPool(this);
     }
@@ -122,13 +127,37 @@ public class BaseUi extends AppCompatActivity {
     //任务回调方法调用，添加信息到主线程的消息队列中
     public void sendMessage(int what, int taskId, String result){
         Bundle bundle = new Bundle();
-        bundle.putInt("taskId",taskId);
-        bundle.putString("result",result);
+        bundle.putInt(BaseHandler.TASK_ID,taskId);
+        bundle.putString(BaseHandler.DATA,result);
         Message message = new Message();
         message.what = what;
         message.setData(bundle);
         handler.sendMessage(message);
     }
+
+    //任务请求完成回调函数，在子类中重新该逻辑
+    public void onCompleteTask(int taskId,BaseMessage message){
+        LogUtil.d(CLASS_NAME + "onCompleteTask="+message);
+    }
+
+    //任务请求发生错误回调函数，在子类中重新该逻辑
+    public void onNetworkError(int taskId,String errorInfo){
+        LogUtil.d(CLASS_NAME + "onErrorTask="+errorInfo);
+    }
+
+    public void showProgressBar(){
+        if(!progressBar.isShown()){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideProgressBar(){
+        if(progressBar.isShown()){
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+
 
     /**
      * 打开指定活动，并关闭之前的所有活动窗口

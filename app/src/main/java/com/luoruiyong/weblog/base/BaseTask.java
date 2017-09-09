@@ -8,12 +8,6 @@ import com.luoruiyong.weblog.util.LogUtil;
  */
 
 public class BaseTask {
-    public static final int COMPLETE = 2;
-    public static final int PAUSE = 1;
-    public static final int START = 0;
-    public static final int STOP = 3;
-    public static final int ERROR = 4;
-
     private int id;
     private String name;
     private String CLASS_NAME = BaseTask.class.getSimpleName() + "-->";

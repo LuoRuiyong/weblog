@@ -140,7 +140,7 @@ public class UiLogin extends BaseUi implements CompoundButton.OnCheckedChangeLis
 //            }
 //        }).start();
         HashMap<String,String> map = new HashMap<>();
-        map.put("name","james");
+        map.put("name","jame");
         map.put("pass","james");
         doAsyncTask(1, C.api.login,map,0);
     }

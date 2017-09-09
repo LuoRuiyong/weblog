@@ -24,7 +24,7 @@ public class LogUtil {
 
     public static void d(String msg){
         if(level <= LogUtil.DEBUG) {
-            Log.w(TAG, msg);
+            Log.d(TAG, msg);
         }
 
     }
