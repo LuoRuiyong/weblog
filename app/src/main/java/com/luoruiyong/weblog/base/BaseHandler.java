@@ -24,15 +24,13 @@ public class BaseHandler extends Handler{
 
     @Override
     public void handleMessage(Message msg) {
+        LogUtil.d(CLASS_NAME+"消息开始处理，编号："+msg.what);
         switch (msg.what){
             case C.handler.taskStart:
-                ui.showProgressBar();
                 break;
             case C.handler.taskPause:
-                ui.showProgressBar();
                 break;
             case C.handler.taskStop:
-                ui.hideProgressBar();
                 break;
             case C.handler.taskComplete:
                 taskComplete(msg);
@@ -52,7 +50,6 @@ public class BaseHandler extends Handler{
         int taskId = bundle.getInt(BaseHandler.TASK_ID);
         String errorInfo = bundle.getString(BaseHandler.DATA);
         ui.onNetworkError(taskId,errorInfo);
-        ui.hideProgressBar();
     }
 
     /**
@@ -66,13 +63,13 @@ public class BaseHandler extends Handler{
         if(result != null){
             try {
                 //回调处理方法
-                ui.onCompleteTask(taskId, AppUtil.getBaseMessageFromJson(result));
+                BaseMessage baseMessage = AppUtil.getBaseMessageFromJson(result);
+                ui.onCompleteTask(taskId,baseMessage);
             } catch (Exception e) {
                 //JSON数据解析失败,或数据与模型不匹配
                 LogUtil.d(CLASS_NAME+"错误提示："+e.getMessage());
                 ui.toast(e.getMessage());
             }
         }
-        ui.hideProgressBar();
     }
 }

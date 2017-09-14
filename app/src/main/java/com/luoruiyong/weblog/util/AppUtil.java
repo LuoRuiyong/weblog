@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**常用的静态方法
@@ -69,9 +71,10 @@ public class AppUtil {
      * @throws Exception  json解析异常
      */
     public static BaseMessage getBaseMessageFromJson(String httpResult) throws Exception{
+        LogUtil.d(CLASS_NAME+"尝试将JSON数据转换为BaseMessage对象数据");
+        BaseMessage message = new BaseMessage();
         try{
             JSONObject object = new JSONObject(httpResult);
-            BaseMessage message = new BaseMessage();
             message.setCode(object.getString(BaseMessage.CODE));
             message.setMessage(object.getString(BaseMessage.MESSAGE));
             try{
@@ -79,8 +82,10 @@ public class AppUtil {
             }catch (Exception e){
                 throw e;
             }
+            LogUtil.d(CLASS_NAME+"成功将JSON数据转换为BaseMessage对象数据");
             return message;
         }catch (JSONException e) {
+            LogUtil.d(CLASS_NAME+"将JSON数据转换为BaseMessage对象数据失败");
             throw new Exception(C.err.jsonFormat);
         }
     }
@@ -96,6 +101,121 @@ public class AppUtil {
         }
         return str;
     }
+
+    /**
+     * 密码检测
+     * @param password   用户输入的密码
+     * @return  是否符合规则
+     */
+    public static boolean checkPassword(String password){
+        Pattern pattern = Pattern.compile(C.pattern.password); // 编译正则表达式
+        Matcher matcher = pattern.matcher(password); //匹配
+        boolean tag = matcher.matches();
+        if(tag){
+            LogUtil.d(CLASS_NAME+"密码检测，"+password+"为合法密码");
+        }else {
+            LogUtil.d(CLASS_NAME+"密码检测，"+password+"为非法密码");
+        }
+        return tag;  //匹配结果
+    }
+
+    /**
+     * 初步验证登录账户 ，
+     * 1、匹配默认账户规则，
+     * 2、匹配手机号码规则，
+     * 3、匹配电子邮箱规则
+     * @param account  用户输入的账户信息，
+     * @return  是否符合规则
+     */
+    public static boolean checkLoginAccount(String account){
+        String message = "";
+        Pattern pattern = Pattern.compile(C.pattern.accountDefault); // 编译正则表达式
+        Matcher matcher = pattern.matcher(account); //匹配默认账户规则
+        boolean tag = matcher.matches();
+        if(!tag){
+            pattern = Pattern.compile(C.pattern.cellNumber); // 编译正则表达式
+            matcher= pattern.matcher(account); //匹配手机号
+            tag = matcher.matches();
+           if(!tag){
+               pattern = Pattern.compile(C.pattern.email); //匹配邮箱
+               matcher = pattern.matcher(account);
+               tag = matcher.matches();
+               if(!tag){
+                   message = "非法账号";
+               }else{
+                   message = "邮箱账号";
+               }
+           }else{
+               message = "手机号吗";
+           }
+        }else{
+            message = "用户名";
+        }
+        LogUtil.d(CLASS_NAME+"初步检测，账号"+account+"为"+message);
+        return tag;
+    }
+
+    /**
+     * 初步验证注册账户
+     * @param account
+     * @return
+     */
+    public static boolean checkAccount(String account){
+        Pattern pattern = Pattern.compile(C.pattern.accountDefault); // 编译正则表达式
+        Matcher matcher = pattern.matcher(account); //匹配默认账户规则
+        boolean tag = matcher.matches();
+        if(tag){
+            LogUtil.d(CLASS_NAME+"初步检测，账号"+account+"为合法法账号");
+        }else {
+            LogUtil.d(CLASS_NAME+"初步检测，账号"+account+"为非法账号");
+        }
+        return tag;  //匹配结果
+    }
+
+    /**
+     * 初步验证昵称
+     * @param nickName
+     * @return
+     */
+    public static boolean checkNickName(String nickName){
+        Pattern pattern = Pattern.compile(C.pattern.nickName); // 编译正则表达式
+        Matcher matcher = pattern.matcher(nickName); //匹配默认账户规则
+        boolean tag = matcher.matches();
+        if(tag){
+            LogUtil.d(CLASS_NAME+"初步检测，昵称"+nickName+"为合法法昵称");
+        }else {
+            LogUtil.d(CLASS_NAME+"初步检测，昵称"+nickName+"为非法昵称");
+        }
+        return tag;  //匹配结果
+    }
+
+
+
+    public static boolean checkCellNumber(String cellNumber){
+        Pattern pattern = Pattern.compile(C.pattern.cellNumber); // 编译正则表达式
+        Matcher matcher = pattern.matcher(cellNumber); //匹配默认账户规则
+        boolean tag = matcher.matches();
+        if(tag){
+            LogUtil.d(CLASS_NAME+"初步检测，手机号码"+cellNumber+"为合法手机号码");
+        }else {
+            LogUtil.d(CLASS_NAME+"初步检测，手机号码"+cellNumber+"为非法手机号码");
+        }
+        return tag;  //匹配结果
+    }
+
+    public static boolean checkEmail(String email){
+        Pattern pattern = Pattern.compile(C.pattern.email); // 编译正则表达式
+        Matcher matcher = pattern.matcher(email); //匹配默认账户规则
+        boolean tag = matcher.matches();
+        if(tag){
+            LogUtil.d(CLASS_NAME+"初步检测，邮箱"+email+"为合法邮箱");
+        }else {
+            LogUtil.d(CLASS_NAME+"初步检测，邮箱"+email+"为非法邮箱");
+        }
+        return tag;  //匹配结果
+    }
+
+
 
     /**
      * 解压服务器返回结果的主体

@@ -6,22 +6,13 @@ import com.luoruiyong.weblog.base.BaseModel;
  * Created by Administrator on 2017/9/7.
  */
 
-public class Image extends BaseModel {
-    public static final String ID = "id";
-    public static final String TYPE = "type";
-    public static final String URL = "url";
+public class Picture extends BaseModel {
+    public static final String TYPE_ICON = "icon";
+    public static final String TYPE_IMAGE = "image";
 
-    private String id;
+
     private String type;
     private String url;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getType() {
         return type;

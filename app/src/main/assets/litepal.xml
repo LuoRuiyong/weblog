@@ -6,6 +6,6 @@
         <mapping class="com.luoruiyong.weblog.model.Blog"/>
         <mapping class="com.luoruiyong.weblog.model.Customer"/>
         <mapping class="com.luoruiyong.weblog.model.Comment"/>
-        <mapping class="com.luoruiyong.weblog.model.Image"/>
+        <mapping class="com.luoruiyong.weblog.model.Picture"/>
     </list>
 </litepal>

@@ -1,14 +1,22 @@
 package com.luoruiyong.weblog.util;
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 
 import com.luoruiyong.weblog.base.C;
+import com.luoruiyong.weblog.model.Picture;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**内存存储管理，提供给AppCache使用
  * Created by Administrator on 2017/9/7.
@@ -25,19 +33,21 @@ public class SDUtil {
      * @param fileName  真实文件名
      * @return  处理结果
      */
-    public static boolean saveImage(Bitmap bitmap , String fileName, int type){
+    public static boolean saveImage(Bitmap bitmap , String fileName, String type){
         fileName = getRealFileName(fileName,type);
         try {
             File file = new File(fileName);
-            file.createNewFile();
-            OutputStream os = new FileOutputStream(file);
+            if(file.exists()){
+                file.delete();
+            }
+            FileOutputStream os = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG,100,os);
             os.flush();
             os.close();
-            LogUtil.d(CLASS_NAME+"保存图片成功");
+            LogUtil.d(CLASS_NAME+"保存图片成功,路径："+fileName);
             return true;
         } catch (IOException e) {
-            LogUtil.d(CLASS_NAME+"保存图片失败");
+            LogUtil.d(CLASS_NAME+"保存图片失败" + e.getMessage());
         }
         return false;
     }
@@ -48,16 +58,16 @@ public class SDUtil {
      * @param type   资源类型
      * @return  图片位图或null
      */
-    public static Bitmap getImage(String fileName,int type){
+    public static Bitmap getImage(String fileName,String type){
         fileName = getRealFileName(fileName,type);
         File file = new File(fileName);
         if(!file.exists()){
-            LogUtil.d(CLASS_NAME+"获取图片失败");
+            LogUtil.d(CLASS_NAME+"从SD卡中获取图片失败");
             return null;
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = false;
-        LogUtil.d(CLASS_NAME+"成功获取图片");
+        LogUtil.d(CLASS_NAME+"成功从SD卡中获取图片");
         return BitmapFactory.decodeFile(fileName,options);
     }
 
@@ -69,11 +79,11 @@ public class SDUtil {
      * @param height  要求高度
      * @return  缩略图
      */
-    public static Bitmap getSampleImage(String fileName,int type,int width,int height){
+    public static Bitmap getSampleImage(String fileName,String type,int width,int height){
         fileName = getRealFileName(fileName,type);
         File file = new File(fileName);
         if(!file.exists()){
-            LogUtil.d(CLASS_NAME+"获取缩放图片失败");
+            LogUtil.d(CLASS_NAME+"从SD卡获取缩放图片失败");
             return null;
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -82,8 +92,58 @@ public class SDUtil {
         int sampleRatio = getSampleRatio(options.outWidth,options.outHeight,width,height);
         options.inJustDecodeBounds = false;
         options.inSampleSize = sampleRatio;
-        LogUtil.d(CLASS_NAME+"成功获取缩放图片");
+        LogUtil.d(CLASS_NAME+"成功从SD卡获取缩放图片");
         return BitmapFactory.decodeFile(fileName,options);
+    }
+
+    /**
+     * 处理系统图库选择数据，获取选择图片的路径
+     * @param data   用户选择的图片信息
+     * @return  图片路径
+     */
+    public static String chooseImage(Context context,Intent data){
+        String imagePath = null;
+        Uri uri = data.getData();
+        if(Build.VERSION.SDK_INT >= 19){
+            //4.4及以上系统使用这个方法处理图片
+            if(DocumentsContract.isDocumentUri(context,uri)){
+                //如果是document类型的uri，则通过document id处理
+                String docId = DocumentsContract.getDocumentId(uri);
+                if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                    String id = docId.split(":")[1];
+                    String selection = MediaStore.Images.Media._ID + "="+id;
+                    imagePath = getImagePath(context,uri,selection);
+                }else if("com.android.providers.download.documents".equals(uri.getAuthority())){
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
+                    imagePath  = getImagePath(context,contentUri,null);
+                }
+            }else if("content".equalsIgnoreCase(uri.getScheme())){
+                //如果是content类型的uri，则使用普通方式处理
+                imagePath = getImagePath(context,uri,null);
+            }else if("file".equalsIgnoreCase(uri.getScheme())){
+                //如果是file类型的uri，直接获取图片路径
+                imagePath = uri.getPath();
+            }
+        }else{
+            //4.4以下系统使用这个方法处理图片
+            imagePath = getImagePath(context,uri,null);
+        }
+        LogUtil.d(CLASS_NAME+"图像资源路径解析结果："+imagePath);
+        return imagePath;
+    }
+
+    //从内容提供器中获取指定的图片路径
+    private static String getImagePath(Context context,Uri uri,String selection){
+        LogUtil.d(CLASS_NAME+"通过uri从内容提供器中查询指定图片资源"+uri.toString());
+        String path = null;
+        Cursor cursor = context.getContentResolver().query(uri,null,selection,null,null);
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
     }
 
     /**
@@ -129,22 +189,20 @@ public class SDUtil {
      * @param type   资源类型
      * @return  真实路径
      */
-    private static String getRealFileName(String fileName,int type){
+    private static String getRealFileName(String fileName,String type){
         String fileDir = "";
-        switch (type){
-            case USER_ICON:
-                fileDir = C.dir.icons;
-                break;
-            case BLOG_IMAGE:
-                fileDir = C.dir.images;
-                break;
+        if(type.equals(Picture.TYPE_ICON)) {
+            fileDir = C.dir.icons;
+        }else if(type.equals(Picture.TYPE_IMAGE)){
+            fileDir = C.dir.images;
         }
         File dir = new File(fileDir);
         if(!dir.exists()){
-            dir.mkdir();
+            dir.mkdirs();
         }
-        LogUtil.d(CLASS_NAME+"获取文件绝对路径："+fileDir+fileName);
-        return fileDir + fileName;
+        fileName = fileDir + fileName + ".png";
+        LogUtil.d(CLASS_NAME+"文件绝对路径："+fileName);
+        return fileName;
     }
 
     /**

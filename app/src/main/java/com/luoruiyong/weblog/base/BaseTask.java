@@ -29,26 +29,26 @@ public class BaseTask {
     }
 
     public void onStart(){
-        LogUtil.d(CLASS_NAME+"onStart()");
+        LogUtil.d(CLASS_NAME+"任务开始，编号："+id);
     }
 
     public void onPause(){
         LogUtil.d(CLASS_NAME+"onPause()");
     }
 
-    public void onStop() throws Exception{
-        LogUtil.d(CLASS_NAME+"onStop()");
+    public void onStop(){
+        LogUtil.d(CLASS_NAME+"网络异常，终止任务，编号："+id);
     }
 
     public void onCompleteTask(){
-        LogUtil.d(CLASS_NAME+"onCompleteTask()");
+        LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
     }
 
     public void onCompleteTask(String httpResponse){
-        LogUtil.d(CLASS_NAME+"onCompleteTask  "+httpResponse);
+        LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
     }
 
     public void onError(String error){
-        LogUtil.d(CLASS_NAME+"onError  "+error);
+        LogUtil.d(CLASS_NAME+"连接超时，终止任务，编号："+id);
     }
 }

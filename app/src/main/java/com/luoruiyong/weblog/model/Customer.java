@@ -7,22 +7,21 @@ import com.luoruiyong.weblog.base.BaseModel;
  */
 
 public class Customer extends BaseModel {
-    public final static String ID = "id";
-    public final static String NICK_NAME = "nickname";
-    public final static String CSIGN_TEXT = "signtext";
-    public final static String FACE_URL = "faceurl";
-    public final static String BLOGS_COUNT = "blogscount";
-    public final static String FANS_COUNT = "fanscount";
-    public final static String CONCERN_COUNT = "concerncount";
 
-    private String id;
-    private String name;
-    private String sign;
-    private String face;
-    private String blogcount;
-    private String fanscount;
-    private String uptime;
-    private String sid;
+    private String id;          //用户id
+    private String sid;         //会话id
+    private String account;     //账户名
+    private String nickName;    //昵称
+    private String signText;    //个性签名
+    private String cellNumber;  //手机号码
+    private String email;       //电子邮箱
+    private String address;     //地址
+    private String iconUrl;     //头像资源在服务器中的路径
+    private String blogsCount;  //微博数量
+    private String fansCount;   //粉丝数量
+    private String concernCount;//关注数量
+
+    private static boolean login = false;
     private static Customer customer = null;
 
     public String getId() {
@@ -33,54 +32,6 @@ public class Customer extends BaseModel {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getFace() {
-        return face;
-    }
-
-    public void setFace(String face) {
-        this.face = face;
-    }
-
-    public String getBlogcount() {
-        return blogcount;
-    }
-
-    public void setBlogcount(String blogcount) {
-        this.blogcount = blogcount;
-    }
-
-    public String getFanscount() {
-        return fanscount;
-    }
-
-    public void setFanscount(String fanscount) {
-        this.fanscount = fanscount;
-    }
-
-    public String getUptime() {
-        return uptime;
-    }
-
-    public void setUptime(String uptime) {
-        this.uptime = uptime;
-    }
-
     public String getSid() {
         return sid;
     }
@@ -89,105 +40,116 @@ public class Customer extends BaseModel {
         this.sid = sid;
     }
 
-    public static Customer getInstance(){
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getSignText() {
+        return signText;
+    }
+
+    public void setSignText(String signText) {
+        this.signText = signText;
+    }
+
+    public String getCellNumber() {
+        return cellNumber;
+    }
+
+    public void setCellNumber(String cellNumber) {
+        this.cellNumber = cellNumber;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getBlogsCount() {
+        return blogsCount;
+    }
+
+    public void setBlogsCount(String blogsCount) {
+        this.blogsCount = blogsCount;
+    }
+
+    public String getFansCount() {
+        return fansCount;
+    }
+
+    public void setFansCount(String fansCount) {
+        this.fansCount = fansCount;
+    }
+
+    public String getConcernCount() {
+        return concernCount;
+    }
+
+    public void setConcernCount(String concernCount) {
+        this.concernCount = concernCount;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+
+    public static Customer getInstance() {
         if(customer == null){
             customer = new Customer();
         }
         return customer;
     }
-    //    private String id;
-//    private String sid; //会话id
-//    private String nickname;
-//    private String signtext;
-//    private String faceurl; //头像资源在服务器中的路径
-//    private String blogscount;
-//    private String fanscount;
-//    private String concerncount;
-//    private boolean login = false;
-//    private static Customer customer = null;
-//
-//    public Customer() {}
-//
-//    public static Customer getInstance() {
-//        if(customer == null){
-//            customer = new Customer();
-//        }
-//        return customer;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
-//
-//    public String getId() {
-//        return id;
-//    }
-//
-//    public void setId(String id) {
-//        this.id = id;
-//    }
-//
-//    public String getSid() {
-//        return sid;
-//    }
-//
-//    public void setSid(String sid) {
-//        this.sid = sid;
-//    }
-//
-//    public String getNickname() {
-//        return nickname;
-//    }
-//
-//    public void setNickname(String nickname) {
-//        this.nickname = nickname;
-//    }
-//
-//    public String getSigntext() {
-//        return signtext;
-//    }
-//
-//    public void setSigntext(String signtext) {
-//        this.signtext = signtext;
-//    }
-//
-//    public String getFaceurl() {
-//        return faceurl;
-//    }
-//
-//    public void setFaceurl(String faceurl) {
-//        this.faceurl = faceurl;
-//    }
-//
-//    public String getBlogscount() {
-//        return blogscount;
-//    }
-//
-//    public void setBlogscount(String blogscount) {
-//        this.blogscount = blogscount;
-//    }
-//
-//    public String getFanscount() {
-//        return fanscount;
-//    }
-//
-//    public void setFanscount(String fanscount) {
-//        this.fanscount = fanscount;
-//    }
-//
-//    public String getConcerncount() {
-//        return concerncount;
-//    }
-//
-//    public void setConcerncount(String concerncount) {
-//        this.concerncount = concerncount;
-//    }
-//
-//    public boolean isLogin() {
-//        return login;
-//    }
-//
-//    public void setLogin(boolean login) {
-//        this.login = login;
-//    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id='" + id + '\'' +
+                ", sid='" + sid + '\'' +
+                ", account='" + account + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", signText='" + signText + '\'' +
+                ", cellNumber='" + cellNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", blogsCount='" + blogsCount + '\'' +
+                ", fansCount='" + fansCount + '\'' +
+                ", concernCount='" + concernCount + '\'' +
+                '}';
+    }
 }

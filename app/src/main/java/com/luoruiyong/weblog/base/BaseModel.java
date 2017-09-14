@@ -8,4 +8,11 @@ import org.litepal.crud.DataSupport;
  * Created by Administrator on 2017/9/7.
  */
 
-public class BaseModel extends DataSupport {}
+public class BaseModel extends DataSupport {
+    public final static String PACKAGE_NAME = "com.luoruiyong.weblog.model.";
+    public final static String CUSTOMER = "Customer";
+    public final static String BLOG = "Blog";
+    public final static String COMMENT = "Comment";
+    public final static String PICTURE = "Picture";
+    public final static String UNIVERSAL_MODEL = "UniversalModel";
+}

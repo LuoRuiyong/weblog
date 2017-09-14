@@ -24,23 +24,25 @@ public class NetworkUtil {
      * @return  网络状态
      */
     public static final int getNetworkState(Context context){
+        String message = "";
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService( Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = manager.getActiveNetworkInfo();
         if(info == null || !info.isConnected()){
             type = TYPE.NONE;
-            LogUtil.d(CLASS_NAME+"手机无网络连接");
+            message = "无网络";
         }else{
             switch (info.getType()){
                 case ConnectivityManager.TYPE_MOBILE:
                     type = TYPE.MOBILE;
-                    LogUtil.d(CLASS_NAME+"手机使用移动网络连接");
+                    message = "移动网络";
                     break;
                 case ConnectivityManager.TYPE_WIFI:
                     type = TYPE.WIFI;
-                    LogUtil.d(CLASS_NAME+"手机使用wifi网络连接");
+                    message = "WIFI连接";
                     break;
             }
         }
+        LogUtil.d(CLASS_NAME+"当前网络状态："+message);
         return type;
     }
 }

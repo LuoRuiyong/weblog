@@ -19,7 +19,7 @@ public class AppCache {
      * @param type   资源类型
      * @return    位图或null
      */
-    public static Bitmap getCacheImage(Context context,String url,int type){
+    public static Bitmap getCacheImage(Context context,String url,String type){
         String fileName = AppUtil.md5(url);
         //尝试从SD卡中读取
         Bitmap cacheBitmap = SDUtil.getImage(fileName,type);
@@ -47,7 +47,7 @@ public class AppCache {
      * @param height   缩略图的高度
      * @return   位图或null
      */
-    public static Bitmap getCacheSampleImage(Context context,String url,int type,int width,int height){
+    public static Bitmap getCacheSampleImage(Context context,String url,String type,int width,int height){
         String fileName = AppUtil.md5(url);
         Bitmap cacheBitmap = SDUtil.getSampleImage(fileName,type,width,height);
         if(cacheBitmap == null){

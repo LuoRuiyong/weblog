@@ -96,6 +96,7 @@ public class BaseMessage {
      * @param result  服务器返回的真实数据
      */
     public void setResult(String result) throws Exception{
+        LogUtil.d(CLASS_NAME+"尝试按结果中的模型类进行数据保存");
         this.result = result;
         if(result.length() > 0){
             try {
@@ -104,8 +105,7 @@ public class BaseMessage {
                 while (iterator.hasNext()){
                     String key = iterator.next();
                     String modelName = getModelName(key);
-                    LogUtil.d(CLASS_NAME+"模型名："+modelName);
-                    String modelClassName = C.model.packageName+modelName;
+                    String modelClassName = BaseModel.PACKAGE_NAME +modelName;
                     JSONArray jsonArray = object.optJSONArray(key);
                     if(jsonArray == null){
                         JSONObject jsonObject = object.optJSONObject(key);
@@ -125,7 +125,10 @@ public class BaseMessage {
                         this.resultList.put(modelName,list);
                     }
                 }
+                LogUtil.d(CLASS_NAME+"成功保存数据到相应模型类");
             }catch (JSONException e){
+                LogUtil.d(CLASS_NAME+"JSON数据异常，无法保存数据到相应的模型类");
+                LogUtil.d(CLASS_NAME+"异常信息："+e.getMessage());
                 throw new Exception(C.err.jsonFormat);
             }
         }
@@ -139,6 +142,7 @@ public class BaseMessage {
      * @throws Exception  找不到指定类
      */
     private BaseModel json2Model(String className,JSONObject object) throws Exception {
+        LogUtil.d(CLASS_NAME+"尝试动态加载模型类"+className+",并添加数据");
         try {
             BaseModel modelObj = (BaseModel) Class.forName(className).newInstance();
             Iterator<String> iterator = object.keys();
@@ -149,8 +153,11 @@ public class BaseMessage {
                 field.setAccessible(true);
                 field.set(modelObj,varValue);
             }
+            LogUtil.d(CLASS_NAME+"成功动态加载模型类，保存数据");
             return modelObj;
         } catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"动态加载"+className+"失败");
+            LogUtil.d(CLASS_NAME+"异常信息："+e.getMessage());
             throw new Exception(C.err.modelError);
         }
     }

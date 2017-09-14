@@ -33,7 +33,7 @@ public class C {
         public final static int test                    = 10001;
         public final static int login                   = 10002;
         public final static int logout                  = 10003;
-        public final static int signin                  = 10004;
+        public final static int sign                    = 10004;
         public final static int publicBlogsList         = 10005;
         public final static int concernedBlogsList      = 10006;
         public final static int myBlogsList             = 10007;
@@ -56,7 +56,21 @@ public class C {
         public final static int modifyCustomerSign      = 10023;
         public final static int modifyCustomerPassword  = 10024;
         public final static int modifyCustomerFace      = 10025;
+        public final static int getUserIconUrl = 10026;
+        public final static int checkAccount            = 10027;
+        public final static int checkNickName           = 10029;
+        public final static int checkEmail              = 10030;
+        public final static int checkCellNumber         = 10031;
     }
+
+    /**
+     * 远程任务请求代码参照表
+     */
+    public final static class status_code{
+
+    }
+
+
 
     /**
      * 微博后台使用阿里云服务器(CentOS7.3)，
@@ -66,12 +80,12 @@ public class C {
      */
     public final static class api{
         //服务器地址
-        private final static String base                     = "http://112.74.13.186:8001/";
+        private final static String base                    = "http://112.74.13.186:8001/";
+        public final static String test                     = "http://112.74.13.186/weblog/";
         //对应服务器中的IndexServer控制器中的*Action方法
-        public final static String test                     = base + "index/test";
-        public final static String login                    = base + "index/login";
+        public final static String index                    = base + "index/index";
+        public final static String login                    = test + "loginTest.php";
         public final static String logout                   = base + "index/logout";
-        public final static String signin                   = base + "index/signin";
         //对应服务器中的BlogServer控制器中的*Action方法
         public final static String publicBlogsList          = base + "blog/publicBlogsList";
         public final static String concernedBlogsList       = base + "blog/concernedBlogsList";
@@ -99,6 +113,14 @@ public class C {
         public final static String modifyCustomerSign       = base + "customer/modifyCustomerSign";
         public final static String modifyCustomerPassword   = base + "customer/modifyCustomerPassword";
         public final static String modifyCustomerFace       = base + "customer/modifyCustomerFace";
+        //所有待定接口都有test来暂时替代
+        public final static String getUserIconUrl = test + "getUserIconTest.php";   //待定
+        public final static String checkAccount             = test;   //待定
+        public final static String checkCellNumber          = test;   //待定
+        public final static String checkEmail               = test;   //待定
+        public final static String checkNickName            = test;   //待定
+        public final static String sign                     = test;   //待定
+
     }
 
     public final static class err{
@@ -112,6 +134,23 @@ public class C {
     }
 
     public final static class model{
-        public final static String packageName = "com.luoruiyong.weblog.model.";
+
+
+    }
+
+    public final static class pattern{
+        //密码规则：字符可为下划线、数字或字母，字符个数6-20个，如：544322dsf_
+        public final static String password = "[a-zA-Z0-9_]{6,20}";
+        //账号规则：首字符必须为字母，其余的可以是下划线、数字或字母，字符个数6-20个，如：hsd232432
+        public final static String accountDefault = "[a-zA-Z]{1}[a-zA-Z0-9_]{5,20}";
+        //手机号码规则：首字符为1，其余为任意数字字符，字符个数11个，如：11234566777
+        public final static String cellNumber = "^1[0-9]{10,10}";
+        //昵称规则：1-12个任意字符,如：大傻
+        public final static String nickName = ".{1,12}";
+        //模块1：字母、数字、下划线、中划线字符
+        //邮箱规则：首字符为字母或数字，其后可为模块1中的任意字符，中间必须包含@字符，
+        //@之后可为模块1中的任意字符，加上.,后可接任意字母，如：ga2323@sae.dfg
+        public final static String email = "[a-zA-Z0-9][a-zA-Z0-9_-]*?@[a-zA-Z0-9_-]+?(\\.[a-zA-Z]+?){1,5}";
+
     }
 }

@@ -33,14 +33,22 @@ public class UiAuthentication extends BaseUi {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_find_password);
+        LogUtil.d(CLASS_NAME+"界面初始化");
         setToolbar();
         bindControls();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(CLASS_NAME+"销毁活动");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                LogUtil.d(CLASS_NAME+"返回");
                 this.finish();
                 break;
         }
@@ -103,7 +111,7 @@ public class UiAuthentication extends BaseUi {
      * 向用户发送验证信息
      */
     private void sendMessageToUser() {
-        LogUtil.d(CLASS_NAME+"向用户发送验证信息");
+        LogUtil.d(CLASS_NAME+"向用户发送验证信息的短信");
     }
 
     /**

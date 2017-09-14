@@ -12,7 +12,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -83,28 +82,26 @@ public class AppClient {
      * @throws Exception  网络错误
      */
     public String get() throws Exception{
-        //判断网络状态
-        if(NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+        if (NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
             throw new Exception(C.err.network);
         }
         HttpResponse response = null;
         HttpGet httpGet = headerFilter(new HttpGet(this.apiUrl));
         try{
-            LogUtil.d(CLASS_NAME+"get.url="+this.apiUrl);
+            LogUtil.d(CLASS_NAME+"GET请求："+apiUrl);
             response = httpClient.execute(httpGet);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
                 String result = resultFilter(response.getEntity());
-                LogUtil.d(CLASS_NAME+"get.result="+result);
+                LogUtil.d(CLASS_NAME+"GET请求结果:"+result);
                 return result;
             }else{
-                return null;
+                LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
+                throw new Exception(C.err.server);
             }
-        }catch (ConnectionPoolTimeoutException e){
+        }catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"请求异常："+C.err.network);
             throw new Exception(C.err.network);
-        }catch (IOException e){
-            LogUtil.d(CLASS_NAME+"Exception:"+e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -114,7 +111,7 @@ public class AppClient {
      * @throws Exception  网络错误
      */
     public String post(HashMap<String,String> params) throws Exception{
-        if(NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+        if (NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
             throw new Exception(C.err.network);
         }
         List<NameValuePair> postParams = new ArrayList<>();
@@ -127,22 +124,21 @@ public class AppClient {
         }
         httpPost.setEntity(new UrlEncodedFormEntity(postParams,charset));
         try{
-            LogUtil.d(CLASS_NAME+"post.url="+this.apiUrl);
-            LogUtil.d(CLASS_NAME+"post.params="+postParams.toString());
+            LogUtil.d(CLASS_NAME+"POST请求："+apiUrl);
+            LogUtil.d(CLASS_NAME+"POST请求参数："+postParams.toString());
             response = httpClient.execute(httpPost);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
                 String result = resultFilter(response.getEntity());
-                LogUtil.d(CLASS_NAME+"post.result="+result);
+                LogUtil.d(CLASS_NAME+"POST请求结果："+result);
                 return result;
             }else{
-                return null;
+                LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
+                throw new Exception(C.err.server);
             }
-        }catch (ConnectionPoolTimeoutException e){
+        }catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"请求异常："+C.err.network);
             throw new Exception(C.err.network);
-        }catch (IOException e) {
-            LogUtil.d(CLASS_NAME+ "Exception:"+e.getMessage());
         }
-        return null;
     }
 
     public String post(HashMap<String,String> params,List<NameValuePair> files) throws Exception{
@@ -177,22 +173,21 @@ public class AppClient {
         }
         httpPost.setEntity(mpEntity);
         try{
-            LogUtil.d(CLASS_NAME+"post.files.url="+this.apiUrl);
-            LogUtil.d(CLASS_NAME+"post.files.params="+mpEntity.toString());
+            LogUtil.d(CLASS_NAME+"POST请求："+apiUrl);
+            LogUtil.d(CLASS_NAME+"POST文件上传请求参数："+mpEntity.toString());
             response = httpClient.execute(httpPost);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
                 String result = resultFilter(response.getEntity());
-                LogUtil.d(CLASS_NAME+"post.files.result="+ result);
+                LogUtil.d(CLASS_NAME+"POST文件上传请求结果："+ result);
                 return result;
             }else{
-                return null;
+                LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
+                throw new Exception(C.err.server);
             }
-        }catch (ConnectionPoolTimeoutException e){
+        }catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"请求异常："+C.err.network);
             throw new Exception(C.err.network);
-        }catch (IOException e) {
-            LogUtil.d( CLASS_NAME+"Exception:"+e.getMessage());
         }
-        return null;
     }
 
     /**

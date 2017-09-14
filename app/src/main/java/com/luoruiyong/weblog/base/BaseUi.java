@@ -3,11 +3,15 @@ package com.luoruiyong.weblog.base;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -46,13 +50,11 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,new BaseTask(){
             @Override
             public void onCompleteTask() {
-                super.onCompleteTask();
-                sendMessage(C.handler.taskComplete,getTaskId(),null);
+                sendMessage(C.handler.taskComplete,this.getId(),null);
             }
             @Override
             public void onError(String error) {
-                super.onError(error);
-                sendMessage(C.handler.taskError,getTaskId(),error);
+                sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
     }
@@ -67,13 +69,11 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,taskUrl,new BaseTask(){
             @Override
             public void onCompleteTask(String httpResult) {
-                super.onCompleteTask();
-                sendMessage(C.handler.taskComplete,getTaskId(),httpResult);
+                sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
             @Override
             public void onError(String error) {
-                super.onError(error);
-                sendMessage(C.handler.taskError,getTaskId(),error);
+                sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
     }
@@ -90,12 +90,12 @@ public class BaseUi extends AppCompatActivity {
             @Override
             public void onCompleteTask(String httpResult) {
                 super.onCompleteTask();
-                sendMessage(C.handler.taskComplete,getTaskId(),httpResult);
+                sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
             @Override
             public void onError(String error) {
-                super.onError(error);
-                sendMessage(C.handler.taskError,getTaskId(),error);
+                super.onCompleteTask();
+                sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
     }
@@ -113,13 +113,11 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,taskUrl,taskParams,taskFiles,new BaseTask(){
             @Override
             public void onCompleteTask(String httpResult) {
-                super.onCompleteTask();
-                sendMessage(C.handler.taskComplete,getTaskId(),httpResult);
+                sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
             @Override
             public void onError(String error) {
-                super.onError(error);
-                sendMessage(C.handler.taskError,getTaskId(),error);
+                sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
     }
@@ -132,17 +130,20 @@ public class BaseUi extends AppCompatActivity {
         Message message = new Message();
         message.what = what;
         message.setData(bundle);
+        LogUtil.d(CLASS_NAME+"向主线程消息队列发送消息,编号："+what+",内容："+bundle.toString());
         handler.sendMessage(message);
+
     }
 
     //任务请求完成回调函数，在子类中重新该逻辑
     public void onCompleteTask(int taskId,BaseMessage message){
-        LogUtil.d(CLASS_NAME + "onCompleteTask="+message);
+        LogUtil.d(CLASS_NAME + "异步请求任务完成，回调函数");
     }
+
 
     //任务请求发生错误回调函数，在子类中重新该逻辑
     public void onNetworkError(int taskId,String errorInfo){
-        LogUtil.d(CLASS_NAME + "onErrorTask="+errorInfo);
+        LogUtil.d(CLASS_NAME + errorInfo);
     }
 
     public void showProgressBar(){
@@ -163,7 +164,7 @@ public class BaseUi extends AppCompatActivity {
      * 打开指定活动，并关闭之前的所有活动窗口
      * @param classObj 目标活动
      */
-    protected void froward(Class<?> classObj){
+    protected void forward(Class<?> classObj){
         Intent intent = new Intent(BaseUi.this,classObj);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -226,5 +227,45 @@ public class BaseUi extends AppCompatActivity {
      */
     protected View getLayout(int layoutId,int itemId){
         return getLayout(layoutId).findViewById(itemId);
+    }
+
+    //重新时间分发机制，响应用户手势，判断是否需要隐藏软键盘
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            View view = getCurrentFocus();
+            if(isShouldHideSoftKeyBoard(view,ev) && view != null){
+                hideSoftKeyBoard(view.getWindowToken());
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    //当用户按下的时候，判断获得焦点的控件是否为输入框
+    public boolean isShouldHideSoftKeyBoard(View view, MotionEvent event){
+        if(view != null && view instanceof EditText){
+            int[] location = {0,0};
+            view.getLocationInWindow(location);
+            int left = location[0];
+            int top = location[1];
+            int right = left + view.getWidth();
+            int bottom = top + view.getHeight();
+            if(event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
+    }
+
+    //隐藏软键盘
+    public void hideSoftKeyBoard(IBinder iBinder){
+        if(iBinder != null){
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(iBinder,InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

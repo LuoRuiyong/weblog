@@ -2,6 +2,8 @@ package com.luoruiyong.weblog.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +26,27 @@ public class UiResetPassword extends BaseUi {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_reset_password);
+        setToolbar();
         bindControls();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(CLASS_NAME+"销毁活动");
+    }
+
+    /**
+     * 设置状态栏的属性
+     */
+    private void setToolbar(){
+        LogUtil.d(CLASS_NAME+"初始化状态栏");
+        Toolbar toorbar = (Toolbar) findViewById(R.id.toorbar);
+        toorbar.setTitle("修改密码");
+        setSupportActionBar(toorbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);   //显示状态栏最左边的按钮，默认资源id为android.R.id.home
+        actionBar.setHomeAsUpIndicator(R.drawable.back);
     }
 
     /**
@@ -70,19 +92,20 @@ public class UiResetPassword extends BaseUi {
      * 重置密码
      */
     private void reset() {
-
+        LogUtil.d(CLASS_NAME+"联网重设密码");
     }
 
     /**
      * 判断所输入的密码是否符合标准
      */
     private void checkNewPassword() {
+        LogUtil.d(CLASS_NAME+"检测新密码");
     }
 
     /**
      * 判断两次输入的密码是否一致
      */
     private void checkPasswordSame() {
-
+        LogUtil.d(CLASS_NAME+"检测确认密码");
     }
 }

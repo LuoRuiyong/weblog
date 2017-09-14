@@ -18,4 +18,10 @@ public class UiIndex extends BaseUi {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_index);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }

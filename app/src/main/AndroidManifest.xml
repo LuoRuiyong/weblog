@@ -21,17 +21,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.UiLogin"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.UiSign"/>
-        <activity android:name=".ui.UiAuthentication"/>
-        <activity android:name=".ui.UiResetPassword"/>
-        <activity android:name=".ui.UiIndex"/>
+        <activity android:name=".ui.UiSign"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ui.UiAuthentication"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ui.UiResetPassword"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ui.UiIndex"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

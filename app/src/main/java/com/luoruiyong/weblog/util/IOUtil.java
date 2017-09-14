@@ -32,6 +32,7 @@ public class IOUtil {
         }
         try{
             URL url = new URL(apiUrl);
+            LogUtil.d(CLASS_NAME+"联网获取图片资源："+url);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(10*1000);
