@@ -140,7 +140,7 @@ public class Customer extends BaseModel {
         return "Customer{" +
                 "id='" + id + '\'' +
                 ", sid='" + sid + '\'' +
-                ", account='" + account + '\'' +
+                ", account_normal='" + account + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", signText='" + signText + '\'' +
                 ", cellNumber='" + cellNumber + '\'' +

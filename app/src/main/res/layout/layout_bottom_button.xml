@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="#aaaaaa">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#DDDDDD"
+        android:layout_marginTop="1dp"
+        android:padding="2dp">
+
+        <ImageView
+            android:id="@+id/iv_home"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/home_selected"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/label_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#5D8EE8"
+            android:textSize="12sp"
+            android:text="首页"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#DDDDDD"
+        android:layout_marginTop="1dp"
+        android:padding="2dp">
+
+        <ImageView
+            android:id="@+id/iv_message"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/message_normal"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/label_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:text="消息"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#DDDDDD"
+        android:layout_marginTop="1dp"
+        android:padding="2dp">
+
+        <ImageView
+            android:id="@+id/iv_write_blog"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/write_blog"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/label_write_blog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:text="写微博"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#DDDDDD"
+        android:layout_marginTop="1dp"
+        android:padding="2dp">
+
+        <ImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/account_normal"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/label_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:text="我的"/>
+    </LinearLayout>
+</LinearLayout>

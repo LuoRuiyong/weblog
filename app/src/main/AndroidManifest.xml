@@ -37,6 +37,8 @@
             android:launchMode="singleTask"/>
         <activity android:name=".ui.UiIndex"
             android:launchMode="singleTask"/>
+        <activity android:name=".ui.UiWriteBlog"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

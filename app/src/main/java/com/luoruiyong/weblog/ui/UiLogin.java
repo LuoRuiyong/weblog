@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.luoruiyong.weblog.R;
 import com.luoruiyong.weblog.base.BaseAuth;
@@ -33,10 +32,10 @@ import com.luoruiyong.weblog.base.BaseUi;
 import com.luoruiyong.weblog.base.C;
 import com.luoruiyong.weblog.model.Customer;
 import com.luoruiyong.weblog.model.Picture;
-import com.luoruiyong.weblog.util.AppCache;
 import com.luoruiyong.weblog.util.AppUtil;
 import com.luoruiyong.weblog.util.LogUtil;
 import com.luoruiyong.weblog.util.NetworkUtil;
+import com.luoruiyong.weblog.util.SDUtil;
 
 import java.util.HashMap;
 
@@ -143,7 +142,7 @@ public class UiLogin extends BaseUi{
         boolean remember = spf.getBoolean("remember",false);
         if(remember){
             LogUtil.d(CLASS_NAME+"恢复数据");
-            account = spf.getString("account","");
+            account = spf.getString("account_normal","");
             password = spf.getString("password","");
             oldAccount = account;
             et_account.setText(oldAccount);
@@ -177,14 +176,14 @@ public class UiLogin extends BaseUi{
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
         if(remember){
             //记住密码
-            editor.putString("account",et_account.getText().toString().trim());
+            editor.putString("account_normal",et_account.getText().toString().trim());
             editor.putString("password",et_password.getText().toString().trim());
             editor.putString("url",picture.getUrl());
             editor.putString("type",picture.getType());
             LogUtil.d(CLASS_NAME+"记住密码");
         }else{
             //不记住密码
-            editor.putString("account","");
+            editor.putString("account_normal","");
             editor.putString("password","");
             editor.putString("url","");
             editor.putString("type","");
@@ -317,16 +316,10 @@ public class UiLogin extends BaseUi{
                     Picture temp = (Picture) message.getResult(BaseModel.PICTURE);
                     picture.setUrl(temp.getUrl());
                     picture.setType(temp.getType());
-                    //此处需要进行SD卡的读写操作，需要动态申请权限
-                    if(ContextCompat.checkSelfPermission(UiLogin.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(UiLogin.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-                        LogUtil.d("申请内存读写权限");
-                    }else{
-                        //应用用于读写权限，加载头像
-                        loadUserIcon();
-                    }
+                    HashMap<String,String> map = new HashMap<>();
+                    map.put("account_normal",account);
+                    LogUtil.d(CLASS_NAME+"尝试下载头像");
+                    doAsyncTask(C.task.getUserIcon,picture.getUrl(),map,0);
                 } catch (Exception e) {
                     LogUtil.d(CLASS_NAME+"异常："+e.getMessage());
                     toast(e.getMessage());
@@ -344,7 +337,7 @@ public class UiLogin extends BaseUi{
                         LogUtil.d("登录失败");
                     }else{
                         BaseAuth.setLogin(true);
-                        Toast.makeText(UiLogin.this,"登录成功",Toast.LENGTH_LONG).show();
+                        toast("登录成功");
                         LogUtil.d("登录成功  ");
                         LogUtil.d(CLASS_NAME+"用户信息："+customer.toString());
                         forward(UiIndex.class);
@@ -357,6 +350,26 @@ public class UiLogin extends BaseUi{
         }
     }
 
+    //图片获取完成回调函数
+    @Override
+    public void onCompleteTask(int taskId) {
+        switch (taskId){
+            case C.task.getUserIcon:
+                //此处需要进行SD卡的读写操作，需要动态申请权限
+                if(ContextCompat.checkSelfPermission(UiLogin.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(UiLogin.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                    LogUtil.d("申请内存读写权限");
+                }else{
+                    //应用用于读写权限，加载头像
+                    loadUserIcon();
+                }
+                break;
+        }
+
+    }
+
     /**
      * 异步任务出现网络异常时回调方法
      * @param taskId  任务编号
@@ -366,7 +379,9 @@ public class UiLogin extends BaseUi{
     public void onNetworkError(int taskId, String errorInfo) {
         LogUtil.d(CLASS_NAME+ errorInfo);
         rl_progressbar_layout.setVisibility(View.GONE);
-        toast(errorInfo);
+        if(taskId == C.task.login){
+            toast(errorInfo);
+        }
     }
 
     //权限申请结果回调函数
@@ -389,28 +404,16 @@ public class UiLogin extends BaseUi{
      */
     private void loadUserIcon(){
         if(picture != null && !TextUtils.isEmpty(picture.getUrl())){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //此处可能需要联网下载图片，所以需要在子线程上进行
-                    final Bitmap bitmap = AppCache.getCacheImage(UiLogin.this,picture.getUrl(),picture.getType());
-                    runOnUiThread(new Runnable() {
-                        //UI改变需要在主线程上进行
-                        @Override
-                        public void run() {
-                            if(bitmap == null) {
-                                //加载失败
-                                iv_user_icon.setImageResource(R.drawable.user_icon_default);
-                                picture.setUrl("");
-                                picture.setType("");
-                            }else {
-                                //加载成功
-                                iv_user_icon.setImageBitmap(bitmap);
-                            }
-                        }
-                    });
-                }
-            }).start();
+            Bitmap bitmap = SDUtil.getImage(picture.getUrl(),picture.getType());
+            if(bitmap == null){
+                //从SD卡获取失败，联网下载
+                HashMap<String,String> map = new HashMap<>();
+                map.put("account_normal",account);
+                doAsyncTask(C.task.getUserIcon,picture.getUrl(),map,0);
+            }else{
+                //获取成功，显示
+                iv_user_icon.setImageBitmap(bitmap);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.luoruiyong.weblog.base;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.luoruiyong.weblog.util.AppClient;
 import com.luoruiyong.weblog.util.LogUtil;
@@ -76,6 +77,7 @@ public class BaseTaskPool {
      */
     public void addTask(int taskId,String taskUrl,HashMap<String,String> taskParams, BaseTask baseTask, long delaytime) {
         baseTask.setId(taskId);
+        baseTask.setUrl(taskUrl);
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,taskParams,null,baseTask,delaytime));
@@ -98,6 +100,7 @@ public class BaseTaskPool {
      */
     public void addTask(int taskId,String taskUrl,HashMap<String,String> taskParams, List<NameValuePair> taskFiles,BaseTask baseTask, long delaytime) {
         baseTask.setId(taskId);
+        baseTask.setUrl(taskUrl);
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,taskParams,taskFiles,baseTask,delaytime));
@@ -132,6 +135,7 @@ public class BaseTaskPool {
             try{
                 baseTask.onStart();
                 String httpRequest = null;  //请求数据结果
+                Bitmap bitmap = null;
                 if(delaytime > 0){
                     Thread.sleep(this.delaytime);
                 }
@@ -145,7 +149,13 @@ public class BaseTaskPool {
                                 //有请求参数，也有文件
                                 httpRequest = client.post(params, taskFiles);
                             } else {
-                                httpRequest = client.post(params);
+                                if(baseTask.getId() == C.task.getUserIcon){
+                                    //获取头像资源
+                                    bitmap = client.getImage(params);
+                                }else{
+                                    //获取普通资源
+                                    httpRequest = client.post(params);
+                                }
                             }
                         } else {
                             //无请求参数，使用get请求
@@ -158,9 +168,14 @@ public class BaseTaskPool {
                 }else{
                     //本地任务
                     //目前暂时不添加本地任务
-                }if(httpRequest != null){
-                    //远程任务
+                }
+                //结果处理
+                if(httpRequest != null){
+                    //远程普通任务(返回的是字符串)
                     baseTask.onCompleteTask(httpRequest);
+                }else if(bitmap != null){
+                    //远程图片下载任务(返回的是Bitmap)
+                    baseTask.onCompleteTask(bitmap);
                 }else{
                     //本地任务
                     baseTask.onCompleteTask();

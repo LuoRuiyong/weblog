@@ -1,5 +1,7 @@
 package com.luoruiyong.weblog.base;
 
+import android.graphics.Bitmap;
+
 import com.luoruiyong.weblog.util.LogUtil;
 
 /**任务类,拥有五个任务状态回调方法
@@ -10,6 +12,10 @@ import com.luoruiyong.weblog.util.LogUtil;
 public class BaseTask {
     private int id;
     private String name;
+    private String url;
+
+
+
     private String CLASS_NAME = BaseTask.class.getSimpleName() + "-->";
 
     public int getId() {
@@ -28,6 +34,14 @@ public class BaseTask {
         this.name = name;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public void onStart(){
         LogUtil.d(CLASS_NAME+"任务开始，编号："+id);
     }
@@ -41,6 +55,10 @@ public class BaseTask {
     }
 
     public void onCompleteTask(){
+        LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
+    }
+
+    public void onCompleteTask(Bitmap bitmap){
         LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
     }
 

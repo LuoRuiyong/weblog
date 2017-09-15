@@ -2,6 +2,7 @@ package com.luoruiyong.weblog.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
@@ -15,7 +16,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.luoruiyong.weblog.model.Picture;
 import com.luoruiyong.weblog.util.LogUtil;
+import com.luoruiyong.weblog.util.SDUtil;
 
 import org.apache.http.NameValuePair;
 
@@ -50,10 +53,12 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,new BaseTask(){
             @Override
             public void onCompleteTask() {
+                super.onCompleteTask();
                 sendMessage(C.handler.taskComplete,this.getId(),null);
             }
             @Override
             public void onError(String error) {
+                super.onError(error);
                 sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
@@ -69,10 +74,25 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,taskUrl,new BaseTask(){
             @Override
             public void onCompleteTask(String httpResult) {
+                super.onCompleteTask(httpResult);
                 sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
+
+            @Override
+            public void onCompleteTask(Bitmap bitmap) {
+                super.onCompleteTask(bitmap);
+                //保存从服务器下载的头像
+                if(this.getId() == C.task.getUserIcon){
+                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_ICON);
+                }else{
+                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
+                }
+                sendMessage(C.handler.taskComplete,this.getId());
+            }
+
             @Override
             public void onError(String error) {
+                super.onError(error);
                 sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
@@ -89,12 +109,25 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,taskUrl,taskParams,new BaseTask(){
             @Override
             public void onCompleteTask(String httpResult) {
-                super.onCompleteTask();
+                super.onCompleteTask(httpResult);
                 sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
+
+            @Override
+            public void onCompleteTask(Bitmap bitmap) {
+                super.onCompleteTask(bitmap);
+                //保存从服务器下载的头像
+                if(this.getId() == C.task.getUserIcon){
+                    SDUtil.saveImage(bitmap,this.getUrl(), Picture.TYPE_ICON);
+                }else{
+                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
+                }
+                sendMessage(C.handler.taskComplete,this.getId());
+            }
+
             @Override
             public void onError(String error) {
-                super.onCompleteTask();
+                super.onError(error);
                 sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
@@ -113,13 +146,39 @@ public class BaseUi extends AppCompatActivity {
         taskPool.addTask(taskid,taskUrl,taskParams,taskFiles,new BaseTask(){
             @Override
             public void onCompleteTask(String httpResult) {
+                super.onCompleteTask(httpResult);
                 sendMessage(C.handler.taskComplete,this.getId(),httpResult);
             }
+
+            @Override
+            public void onCompleteTask(Bitmap bitmap) {
+                super.onCompleteTask(bitmap);
+                //保存从服务器下载的头像
+                if(this.getId() == C.task.getUserIcon){
+                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_ICON);
+                }else{
+                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
+                }
+                sendMessage(C.handler.taskComplete,this.getId());
+            }
+
             @Override
             public void onError(String error) {
+                super.onError(error);
                 sendMessage(C.handler.taskError,this.getId(),error);
             }
         },delaytime);
+    }
+    //任务回调方法调用，添加信息到主线程的消息队列中
+    public void sendMessage(int what, int taskId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(BaseHandler.TASK_ID,taskId);
+        Message message = new Message();
+        message.what = what;
+        message.setData(bundle);
+        LogUtil.d(CLASS_NAME+"向主线程消息队列发送消息,编号："+what+",内容："+bundle.toString());
+        handler.sendMessage(message);
+
     }
 
     //任务回调方法调用，添加信息到主线程的消息队列中
@@ -137,6 +196,11 @@ public class BaseUi extends AppCompatActivity {
 
     //任务请求完成回调函数，在子类中重新该逻辑
     public void onCompleteTask(int taskId,BaseMessage message){
+        LogUtil.d(CLASS_NAME + "异步请求任务完成，回调函数");
+    }
+
+    //任务请求完成回调函数，在子类中重新该逻辑
+    public void onCompleteTask(int taskId){
         LogUtil.d(CLASS_NAME + "异步请求任务完成，回调函数");
     }
 

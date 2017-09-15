@@ -396,7 +396,7 @@ public class UiSign extends BaseUi{
         }
         //账号，昵称，密码都满足，联网注册
         HashMap<String, String> params = new HashMap<>();
-        params.put("account", account);
+        params.put("account_normal", account);
         params.put("nickName", nickName);
         params.put("password", password);
         if(TextUtils.isEmpty(imagePath)) {
@@ -452,7 +452,7 @@ public class UiSign extends BaseUi{
                 //联网注册处理结果
                 if (model.getStatus().equals(UniversalModel.SUCCEED)) {
                     LogUtil.d(CLASS_NAME + "注册成功");
-                    Toast.makeText(UiSign.this, "注册成功", Toast.LENGTH_LONG).show();
+                   toast("注册成功");
                     LogUtil.d(CLASS_NAME + "跳转到登录界面");
                     forward(UiLogin.class);
                 } else {
@@ -467,7 +467,9 @@ public class UiSign extends BaseUi{
         //网络连接有误
         LogUtil.d(CLASS_NAME+errorInfo);
         rl_progressbar_layout.setVisibility(View.GONE);
-        toast(errorInfo);
+        if(taskId == C.task.sign){
+            toast(errorInfo);
+        }
     }
 
     /**

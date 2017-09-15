@@ -61,6 +61,7 @@ public class C {
         public final static int checkNickName           = 10029;
         public final static int checkEmail              = 10030;
         public final static int checkCellNumber         = 10031;
+        public final static int getUserIcon         = 10032;
     }
 
     /**
@@ -124,7 +125,7 @@ public class C {
     }
 
     public final static class err{
-        public final static String network = "网络错误";
+        public final static String network = "无法连接网络，请稍后再试";
         public final static String server = "连接不到服务器";
         public final static String jsonFormat = "JSON数据不匹配";
         public final static String noData = "服务器返回结果为空";

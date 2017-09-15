@@ -1,6 +1,8 @@
 package com.luoruiyong.weblog.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.luoruiyong.weblog.base.C;
 
@@ -26,6 +28,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +118,7 @@ public class AppClient {
             throw new Exception(C.err.network);
         }
         List<NameValuePair> postParams = new ArrayList<>();
-        HttpPost httpPost = new HttpPost(this.apiUrl);
+        HttpPost httpPost = headerFilter(new HttpPost(this.apiUrl));
         HttpResponse response ;
         Iterator iterator = params.entrySet().iterator();
         while (iterator.hasNext()){
@@ -132,7 +135,7 @@ public class AppClient {
                 LogUtil.d(CLASS_NAME+"POST请求结果："+result);
                 return result;
             }else{
-                LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
+                LogUtil.d(CLASS_NAME+"POST请求结果:服务器异常");
                 throw new Exception(C.err.server);
             }
         }catch (Exception e) {
@@ -146,7 +149,7 @@ public class AppClient {
             throw new Exception(C.err.network);
         }
         List<NameValuePair> postParams = new ArrayList<>();
-        HttpPost httpPost = new HttpPost(this.apiUrl);
+        HttpPost httpPost = headerFilter(new HttpPost(this.apiUrl));
         HttpResponse response ;
         Iterator iterator = params.entrySet().iterator();
         while (iterator.hasNext()){
@@ -180,6 +183,47 @@ public class AppClient {
                 String result = resultFilter(response.getEntity());
                 LogUtil.d(CLASS_NAME+"POST文件上传请求结果："+ result);
                 return result;
+            }else{
+                LogUtil.d(CLASS_NAME+"POST请求结果:服务器异常");
+                throw new Exception(C.err.server);
+            }
+        }catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"请求异常："+C.err.network);
+            throw new Exception(C.err.network);
+        }
+    }
+
+
+    public Bitmap getImage(HashMap<String ,String > params) throws Exception{
+        if (NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+            throw new Exception(C.err.network);
+        }
+        List<NameValuePair> postParams = new ArrayList<>();
+        HttpPost httpPost = headerFilter(new HttpPost(this.apiUrl));
+        Iterator iterator = params.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry entry = (Map.Entry) iterator.next();
+            postParams.add(new BasicNameValuePair(entry.getKey().toString(),entry.getValue().toString()));
+        }
+        httpPost.setEntity(new UrlEncodedFormEntity(postParams,charset));
+        try{
+            LogUtil.d(CLASS_NAME+"尝试从服务器获取图片："+apiUrl);
+            LogUtil.d(CLASS_NAME+"请求参数："+postParams.toString());
+            HttpResponse response = httpClient.execute(httpPost);
+            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+                HttpEntity entity = response.getEntity();
+                if(entity.isStreaming()){
+                    LogUtil.d(CLASS_NAME+"请求结果：成功");
+                    InputStream inputStream = entity.getContent();
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    if(inputStream != null){
+                        inputStream.close();
+                    }
+                    return bitmap;
+                }else{
+                    LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
+                    throw new Exception(C.err.server);
+                }
             }else{
                 LogUtil.d(CLASS_NAME+"GET请求结果:服务器异常");
                 throw new Exception(C.err.server);

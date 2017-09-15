@@ -30,10 +30,11 @@ public class SDUtil {
     /**
      * 保存图片
      * @param bitmap   图像位图
-     * @param fileName  真实文件名
+     * @param url  图片资源在服务器中的路径
      * @return  处理结果
      */
-    public static boolean saveImage(Bitmap bitmap , String fileName, String type){
+    public static boolean saveImage(Bitmap bitmap , String url, String type){
+        String fileName = AppUtil.md5(url);
         fileName = getRealFileName(fileName,type);
         try {
             File file = new File(fileName);
@@ -54,11 +55,12 @@ public class SDUtil {
 
     /**
      * 获取图片位图
-     * @param fileName 文件名
+     * @param url 图片资源在服务器中的路径
      * @param type   资源类型
      * @return  图片位图或null
      */
-    public static Bitmap getImage(String fileName,String type){
+    public static Bitmap getImage(String url,String type){
+        String fileName = AppUtil.md5(url);
         fileName = getRealFileName(fileName,type);
         File file = new File(fileName);
         if(!file.exists()){
@@ -73,13 +75,14 @@ public class SDUtil {
 
     /**
      * 获取图片缩略图，防止出现OOM
-     * @param fileName  文件名
+     * @param url  图片资源在服务器中的路径
      * @param type   资源类型
      * @param width   要求宽度
      * @param height  要求高度
      * @return  缩略图
      */
-    public static Bitmap getSampleImage(String fileName,String type,int width,int height){
+    public static Bitmap getSampleImage(String url,String type,int width,int height){
+        String fileName = AppUtil.md5(url);
         fileName = getRealFileName(fileName,type);
         File file = new File(fileName);
         if(!file.exists()){
@@ -201,7 +204,7 @@ public class SDUtil {
             dir.mkdirs();
         }
         fileName = fileDir + fileName + ".png";
-        LogUtil.d(CLASS_NAME+"文件绝对路径："+fileName);
+        LogUtil.d(CLASS_NAME+"获得图片文件绝对路径："+fileName);
         return fileName;
     }
 
