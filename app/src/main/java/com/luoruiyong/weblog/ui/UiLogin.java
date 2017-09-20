@@ -317,7 +317,7 @@ public class UiLogin extends BaseUi{
                     picture.setUrl(temp.getUrl());
                     picture.setType(temp.getType());
                     HashMap<String,String> map = new HashMap<>();
-                    map.put("account_normal",account);
+                    map.put("account",account);
                     LogUtil.d(CLASS_NAME+"尝试下载头像");
                     doAsyncTask(C.task.getUserIcon,picture.getUrl(),map,0);
                 } catch (Exception e) {

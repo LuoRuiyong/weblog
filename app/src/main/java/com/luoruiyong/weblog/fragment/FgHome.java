@@ -1,17 +1,20 @@
 package com.luoruiyong.weblog.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.luoruiyong.weblog.R;
-import com.luoruiyong.weblog.adapter.MyFragmentPagerAdapter;
+import com.luoruiyong.weblog.adapter.MyFragmentAdapter;
+import com.luoruiyong.weblog.model.Blog;
+import com.luoruiyong.weblog.ui.UiIndex;
 import com.luoruiyong.weblog.util.LogUtil;
 
 import java.util.ArrayList;
@@ -25,8 +28,10 @@ public class FgHome extends Fragment {
     private final static String CLASS_NAME = FgHome.class.getSimpleName()+"-->";
     private View view;
     private ViewPager vp_main;
-    private ArrayList<Fragment> list ;
-    private MyFragmentPagerAdapter adapter;
+    private PagerTabStrip pts_tab;
+    private ArrayList<FgBlogsList> fragmentList ;
+    private ArrayList<String> tabList;
+    private MyFragmentAdapter adapter;
 
     @Nullable
     @Override
@@ -39,17 +44,48 @@ public class FgHome extends Fragment {
 
     private void init() {
         vp_main = view.findViewById(R.id.main);
+        pts_tab = view.findViewById(R.id.tab);
         FragmentManager manager = getActivity().getSupportFragmentManager();
-        FragmentTransaction bt = manager.beginTransaction();
-        list = new ArrayList<>();
-        list.add(new FgBlogsList());
-        list.add(new FgBlogsList());
-        adapter = new MyFragmentPagerAdapter(manager,list);
+        fragmentList = new ArrayList<>();
+        fragmentList.add(new FgBlogsList());
+        fragmentList.add(new FgBlogsList());
+        tabList = new ArrayList<>();
+        tabList.add("广场");
+        tabList.add("关注");
+        pts_tab.setTabIndicatorColor(Color.BLUE);
+        pts_tab.setDrawFullUnderline(false);
+        adapter = new MyFragmentAdapter(manager,fragmentList,tabList);
         vp_main.setAdapter(adapter);
-        bt.commit();
+        vp_main.addOnPageChangeListener(new MyOnPageChangeListener());
+        LogUtil.d(CLASS_NAME+"成功添加碎片");
     }
 
-    public void update(){
+    public void initPublicBlogData(ArrayList<Blog> blogsList){
+        fragmentList.get(0).initData(blogsList);
 
     }
+
+    public void initConcernBlogData(ArrayList<Blog> blogsList){
+       fragmentList.get(1).initData(blogsList);
+    }
+
+    public void notifyPublicDataChange(){
+        fragmentList.get(0).notifyDataChange();
+    }
+
+    public void notifyConcernedDataChange(){
+        fragmentList.get(1).notifyDataChange();
+    }
+
+   private class MyOnPageChangeListener implements ViewPager.OnPageChangeListener{
+       @Override
+       public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+       @Override
+       public void onPageSelected(int position) {
+           ((UiIndex)getActivity()).setSelectedPage(position);
+       }
+
+       @Override
+       public void onPageScrollStateChanged(int state) {}
+   }
 }

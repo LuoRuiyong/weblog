@@ -10,8 +10,8 @@ public class C {
      */
     public final static class dir{
         private static final String base = "/sdcard/weblog/";
-        public static final String icons = base + "icon/";
-        public static final String images = base + "images/";
+        public static final String icon = base + "icon/";
+        public static final String image = base + "image/";
     }
 
     /**
@@ -56,12 +56,13 @@ public class C {
         public final static int modifyCustomerSign      = 10023;
         public final static int modifyCustomerPassword  = 10024;
         public final static int modifyCustomerFace      = 10025;
-        public final static int getUserIconUrl = 10026;
-        public final static int checkAccount            = 10027;
-        public final static int checkNickName           = 10029;
-        public final static int checkEmail              = 10030;
-        public final static int checkCellNumber         = 10031;
-        public final static int getUserIcon         = 10032;
+        public final static int getUserIcon             = 10026;
+        public final static int getUserIconUrl          = 10027;
+        public final static int getBlogPicture          = 10028;
+        public final static int checkAccount            = 10029;
+        public final static int checkNickName           = 10030;
+        public final static int checkEmail              = 10031;
+        public final static int checkCellNumber         = 10032;
     }
 
     /**
@@ -85,11 +86,14 @@ public class C {
         public final static String test                     = "http://112.74.13.186/weblog/";
         //对应服务器中的IndexServer控制器中的*Action方法
         public final static String index                    = base + "index/index";
+        //public final static String login                    = base + "index/login";
         public final static String login                    = test + "loginTest.php";
         public final static String logout                   = base + "index/logout";
         //对应服务器中的BlogServer控制器中的*Action方法
-        public final static String publicBlogsList          = base + "blog/publicBlogsList";
-        public final static String concernedBlogsList       = base + "blog/concernedBlogsList";
+        //public final static String publicBlogsList          = base + "blog/publicBlogsList";
+        public final static String publicBlogsList          = test + "getPublicBlogsList.php";
+        //public final static String concernedBlogsList       = base + "blog/concernedBlogsList";
+        public final static String concernedBlogsList       = test + "getConcernedBlogsList.php";
         public final static String myBlogsList              = base + "blog/myBlogsList";
         public final static String blogView                 = base + "blog/blogView";
         public final static String addBlog                  = base + "blog/addBlog";

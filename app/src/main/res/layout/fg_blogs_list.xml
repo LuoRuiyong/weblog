@@ -1,29 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hello"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DDDDDD">
-    <ScrollView
+    android:background="#eeeeee">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/blogs_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-            <include layout="@layout/item_blogs_list_1"/>
-
-        </LinearLayout>
-    </ScrollView>
-
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

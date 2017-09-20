@@ -5,7 +5,9 @@
     <list>
         <mapping class="com.luoruiyong.weblog.model.Blog"/>
         <mapping class="com.luoruiyong.weblog.model.Customer"/>
-        <mapping class="com.luoruiyong.weblog.model.Comment"/>
+        <mapping class="com.luoruiyong.weblog.model.BlogComment"/>
+        <mapping class="com.luoruiyong.weblog.model.BlogShare"/>
+        <mapping class="com.luoruiyong.weblog.model.BlogPraise"/>
         <mapping class="com.luoruiyong.weblog.model.Picture"/>
     </list>
 </litepal>

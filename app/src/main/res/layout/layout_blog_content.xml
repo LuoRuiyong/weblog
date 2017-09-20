@@ -2,22 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
     <TextView
+        android:id="@+id/blog_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:lineSpacingMultiplier="1.2"
-        android:padding="10dp"
+        android:maxLines="4"
+        android:ellipsize="end"
         android:textColor="#333333"
         android:textSize="16sp"
         android:text="安排噶额娃儿娃娃艾尔阿爱的发股份啊发斯蒂芬个人法尔飞飞飞"/>
 
+    <com.luoruiyong.weblog.myview.BlogPictureViewGroup
+        android:id="@+id/blog_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone">
+    </com.luoruiyong.weblog.myview.BlogPictureViewGroup>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="#EEEEEE"/>
+        android:background="#eeeeee"/>
 </LinearLayout>

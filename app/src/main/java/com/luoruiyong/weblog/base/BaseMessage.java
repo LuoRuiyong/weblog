@@ -11,7 +11,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**存放服务器返回的数据
@@ -74,7 +73,7 @@ public class BaseMessage {
      * @return 模板列表
      * @throws Exception 空数据
      */
-    public List<BaseModel> getResultList(String modelName) throws Exception {
+    public ArrayList<BaseModel> getResultList(String modelName) throws Exception {
         ArrayList<BaseModel> list = resultList.get(modelName);
         if(list == null || list.size() == 0){
             throw new Exception(C.err.noData);
@@ -104,6 +103,7 @@ public class BaseMessage {
                 Iterator<String> iterator = object.keys();
                 while (iterator.hasNext()){
                     String key = iterator.next();
+                    LogUtil.d(CLASS_NAME+"key="+key);
                     String modelName = getModelName(key);
                     String modelClassName = BaseModel.PACKAGE_NAME +modelName;
                     JSONArray jsonArray = object.optJSONArray(key);
@@ -148,10 +148,20 @@ public class BaseMessage {
             Iterator<String> iterator = object.keys();
             while (iterator.hasNext()){
                 String varField = iterator.next();
-                String varValue = object.getString(varField);
                 Field field = modelObj.getClass().getDeclaredField(varField);
                 field.setAccessible(true);
-                field.set(modelObj,varValue);
+                if (varField.equals("pictureUrl")){
+                    JSONObject obj = new JSONObject(object.getString(varField));
+                    ArrayList<String> urlList = new ArrayList<>();
+                    Iterator<String> it = obj.keys();
+                    while (it.hasNext()){
+                        urlList.add(obj.getString(it.next()));
+                    }
+                    field.set(modelObj,urlList);
+                }else{
+                    String varValue = object.getString(varField);
+                    field.set(modelObj,varValue);
+                }
             }
             LogUtil.d(CLASS_NAME+"成功动态加载模型类，保存数据");
             return modelObj;
@@ -168,10 +178,12 @@ public class BaseMessage {
      * @return  模型名
      */
     private String getModelName(String str){
-        String[] strarr = str.split("\\w");
+        String[] strarr = str.split("\\W");
         if(strarr.length > 0){
             str = strarr[0];
         }
-        return AppUtil.ucFirst(str);
+        str = AppUtil.ucFirst(str);
+        LogUtil.d(CLASS_NAME+"模型类名："+str);
+        return str;
     }
 }

@@ -17,12 +17,15 @@ public class Customer extends BaseModel {
     private String email;       //电子邮箱
     private String address;     //地址
     private String iconUrl;     //头像资源在服务器中的路径
-    private String blogsCount;  //微博数量
+    private String blogCount;  //微博数量
     private String fansCount;   //粉丝数量
     private String concernCount;//关注数量
 
     private static boolean login = false;
     private static Customer customer = null;
+
+
+    public Customer() {}
 
     public String getId() {
         return id;
@@ -81,11 +84,11 @@ public class Customer extends BaseModel {
     }
 
     public String getBlogsCount() {
-        return blogsCount;
+        return blogCount;
     }
 
     public void setBlogsCount(String blogsCount) {
-        this.blogsCount = blogsCount;
+        this.blogCount = blogsCount;
     }
 
     public String getFansCount() {
@@ -140,14 +143,14 @@ public class Customer extends BaseModel {
         return "Customer{" +
                 "id='" + id + '\'' +
                 ", sid='" + sid + '\'' +
-                ", account_normal='" + account + '\'' +
+                ", account='" + account + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", signText='" + signText + '\'' +
                 ", cellNumber='" + cellNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", iconUrl='" + iconUrl + '\'' +
-                ", blogsCount='" + blogsCount + '\'' +
+                ", blogCount='" + blogCount + '\'' +
                 ", fansCount='" + fansCount + '\'' +
                 ", concernCount='" + concernCount + '\'' +
                 '}';

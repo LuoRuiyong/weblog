@@ -14,7 +14,7 @@ public class LogUtil {
     private static final int INFO    = 3;
     private static final int WARN    = 4;
     private static final int ERROR   = 5;
-    private static int level = 1;
+    private static int level = 0;
 
     public static void v(String msg){
         if(level <= LogUtil.VERBOSE){

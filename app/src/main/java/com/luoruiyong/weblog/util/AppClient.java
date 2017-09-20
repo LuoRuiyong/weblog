@@ -44,8 +44,8 @@ public class AppClient {
     private static final String CLASS_NAME = AppClient.class.getSimpleName() + "-->";
     private static final int CS_NONE = 0;
     private static final int CS_GZIP = 1;
-    private static final int CONNECTIMEOUT = 2*1000;
-    private static final int SOCKETTIMEOUT = 2*1000;
+    private static final int CONNECTIMEOUT = 10*1000;
+    private static final int SOCKETTIMEOUT = 10*1000;
     private String charset = HTTP.UTF_8;    //默认编码
     private int compress = CS_NONE;   //默认压缩方式
     private String apiUrl;
@@ -193,6 +193,37 @@ public class AppClient {
         }
     }
 
+    public Bitmap getImage() throws Exception{
+        if (NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){
+            throw new Exception(C.err.network);
+        }
+        HttpPost httpPost = headerFilter(new HttpPost(this.apiUrl));
+        try{
+            LogUtil.d(CLASS_NAME+"尝试从服务器获取图片："+apiUrl);
+            HttpResponse response = httpClient.execute(httpPost);
+            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+                HttpEntity entity = response.getEntity();
+                if(entity.isStreaming()){
+                    LogUtil.d(CLASS_NAME+"请求结果：成功");
+                    InputStream inputStream = entity.getContent();
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    if(inputStream != null){
+                        inputStream.close();
+                    }
+                    return bitmap;
+                }else{
+                    LogUtil.d(CLASS_NAME+"POST请求结果:服务器异常");
+                    throw new Exception(C.err.server);
+                }
+            }else{
+                LogUtil.d(CLASS_NAME+"POST请求结果:服务器异常");
+                throw new Exception(C.err.server);
+            }
+        }catch (Exception e) {
+            LogUtil.d(CLASS_NAME+"请求异常："+C.err.network);
+            throw new Exception(C.err.network);
+        }
+    }
 
     public Bitmap getImage(HashMap<String ,String > params) throws Exception{
         if (NetworkUtil.getNetworkState(context) == NetworkUtil.TYPE.NONE){

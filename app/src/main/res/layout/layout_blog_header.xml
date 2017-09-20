@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp">
+    android:layout_height="70dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
     <ImageView
         android:id="@+id/user_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="5dp"
         android:scaleType="centerCrop"
         android:layout_centerVertical="true"
-        android:src="@drawable/user_icon_test"/>
+        android:src="@drawable/user_icon_default"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,33 +39,47 @@
             android:text="17分钟前"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:layout_height="36dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
         android:padding="1dp"
         android:background="#E86107">
 
         <TextView
-            android:id="@+id/add_concern"
+        android:id="@+id/add_concern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawableLeft="@drawable/add_concern"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/click_background_selector"
+        android:textColor="#E86107"
+        android:textSize="16sp"
+        android:text="关注" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/concerned"
+        android:layout_width="80dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="1dp"
+        android:background="#aaaaaa"
+        android:visibility="gone">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/add_concern"
-            android:drawablePadding="2dp"
-            android:padding="5dp"
-            android:background="#ffffff"
-            android:textColor="#E86107"
+            android:gravity="center"
+            android:drawableLeft="@drawable/concerned"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:background="@drawable/normal_background"
+            android:textColor="#555555"
             android:textSize="16sp"
-            android:text="关注"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentBottom="true"
-        android:background="#EEEEEE" />
+            android:text="已关注"/>
+    </RelativeLayout>
 </RelativeLayout>

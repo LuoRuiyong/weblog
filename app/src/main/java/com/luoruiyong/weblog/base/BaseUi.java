@@ -83,7 +83,7 @@ public class BaseUi extends AppCompatActivity {
                 super.onCompleteTask(bitmap);
                 //保存从服务器下载的头像
                 if(this.getId() == C.task.getUserIcon){
-                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_ICON);
+                    SDUtil.saveImage(bitmap,this.getUrl(), Picture.TYPE_ICON);
                 }else{
                     SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
                 }

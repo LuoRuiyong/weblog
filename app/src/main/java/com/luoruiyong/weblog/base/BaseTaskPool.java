@@ -36,7 +36,7 @@ public class BaseTaskPool {
      */
     public void addTask(int taskId, BaseTask baseTask, long delaytime) {
         baseTask.setId(taskId);
-        baseTask.setName("本地任务");
+        baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(null,null,null,baseTask,delaytime));
             LogUtil.d(CLASS_NAME+"添加id为"+baseTask.getId()+"的"+baseTask.getName()+"到线程池");
@@ -56,6 +56,7 @@ public class BaseTaskPool {
      */
     public void addTask(int taskId,String taskUrl, BaseTask baseTask, long delaytime) {
         baseTask.setId(taskId);
+        baseTask.setUrl(taskUrl);
         baseTask.setName("远程任务");
         try{
             taskPool.execute(new TaskThread(taskUrl,null,null,baseTask,delaytime));
@@ -158,11 +159,16 @@ public class BaseTaskPool {
                                 }
                             }
                         } else {
-                            //无请求参数，使用get请求
-                            httpRequest = client.get();
+                            if(baseTask.getId() == C.task.getBlogPicture || baseTask.getId() == C.task.getUserIcon){
+                                //获取头像资源
+                                bitmap = client.getImage();
+                            }else{
+                                //获取普通资源
+                                httpRequest = client.get();
+                            }
                         }
                     } catch (Exception e) {
-                        LogUtil.d(CLASS_NAME + "异常信息：" + e.getMessage());
+                        LogUtil.d(CLASS_NAME + "异常信息A：" + e.getMessage());
                         baseTask.onError(e.getMessage());
                     }
                 }else{
@@ -173,16 +179,18 @@ public class BaseTaskPool {
                 if(httpRequest != null){
                     //远程普通任务(返回的是字符串)
                     baseTask.onCompleteTask(httpRequest);
+                    LogUtil.d(CLASS_NAME+"A");
                 }else if(bitmap != null){
                     //远程图片下载任务(返回的是Bitmap)
                     baseTask.onCompleteTask(bitmap);
+                    LogUtil.d(CLASS_NAME+"B");
                 }else{
                     //本地任务
                     baseTask.onCompleteTask();
+                    LogUtil.d(CLASS_NAME+"C");
                 }
             }catch (Exception e){
-                LogUtil.d(CLASS_NAME+"异常信息："+e.getMessage());
-                e.printStackTrace();
+                LogUtil.d(CLASS_NAME+"异常信息B："+e.getMessage());
             }
         }
     }

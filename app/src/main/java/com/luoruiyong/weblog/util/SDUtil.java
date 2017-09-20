@@ -154,8 +154,8 @@ public class SDUtil {
      * @return  处理结果
      */
     public static boolean ClearCache(){
-        File imagesDir = new File(C.dir.images);
-        File iconDir = new File(C.dir.icons);
+        File imagesDir = new File(C.dir.image);
+        File iconDir = new File(C.dir.icon);
         if(deleteDirWithFile(imagesDir) && deleteDirWithFile(iconDir)){
             LogUtil.d(CLASS_NAME+"成功清除缓存");
             return true;
@@ -195,9 +195,9 @@ public class SDUtil {
     private static String getRealFileName(String fileName,String type){
         String fileDir = "";
         if(type.equals(Picture.TYPE_ICON)) {
-            fileDir = C.dir.icons;
+            fileDir = C.dir.icon;
         }else if(type.equals(Picture.TYPE_IMAGE)){
-            fileDir = C.dir.images;
+            fileDir = C.dir.image;
         }
         File dir = new File(fileDir);
         if(!dir.exists()){

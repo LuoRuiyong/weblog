@@ -2,30 +2,25 @@ package com.luoruiyong.weblog.model;
 
 import com.luoruiyong.weblog.base.BaseModel;
 
+import java.util.ArrayList;
+
 /**微博类
  * Created by Administrator on 2017/9/7.
  */
 
 public class Blog extends BaseModel{
-    public static final String ID = "id";    //微博id
-    public static final String AUTHOR = "author";   //撰写者昵称
-    public static final String AUTHOR_ID = "authorid";  //撰写者id
-    public static final String AUTHOR_FACE_URL = "faceurl";  //撰写者头像
-    public static final String CONTENT = "content";   //微博正文
-    public static final String COMMENT_COUNT = "commentcount";  //评论数
-    public static final String PRAISE_COUNT = "praisecount";   //点赞数
-    public static final String TRANSMIT_COUNT = "transmitcount";  //转发数
-    public static final String CREATE_TIME = "createtime";   //撰写时间
 
     private String id;
-    private String author;
-    private String authorid;
-    private String faceurl;
+    private String editorId;
+    private String editorNickname;
+    private String editorIconUrl;
     private String content;
-    private String commentcount;
-    private String praisecount;  //点赞统计
-    private String transmitcount;  //转发统计
-    private String createtime;   //发表时间
+    private String commentCount;
+    private String shareCount;
+    private String praiseCount;
+    private ArrayList<String> pictureUrl;
+    private String createTime;
+    private String fanRelationship;
 
     public Blog() {}
 
@@ -37,12 +32,28 @@ public class Blog extends BaseModel{
         this.id = id;
     }
 
-    public String getAuthorid() {
-        return authorid;
+    public String getEditorId() {
+        return editorId;
     }
 
-    public void setAuthorid(String authorid) {
-        this.authorid = authorid;
+    public void setEditorId(String editorId) {
+        this.editorId = editorId;
+    }
+
+    public String getEditorNickname() {
+        return editorNickname;
+    }
+
+    public void setEditorNickname(String editorNickname) {
+        this.editorNickname = editorNickname;
+    }
+
+    public String getEditorIconUrl() {
+        return editorIconUrl;
+    }
+
+    public void setEditorIconUrl(String editorIconUrl) {
+        this.editorIconUrl = editorIconUrl;
     }
 
     public String getContent() {
@@ -53,53 +64,68 @@ public class Blog extends BaseModel{
         this.content = content;
     }
 
-    public String getCommentcount() {
-        return commentcount;
+    public String getCommentCount() {
+        return commentCount;
     }
 
-    public void setCommentcount(String commentcount) {
-        this.commentcount = commentcount;
+    public void setCommentCount(String commentCount) {
+        this.commentCount = commentCount;
     }
 
-    public String getPraisecount() {
-        return praisecount;
+    public String getShareCount() {
+        return shareCount;
     }
 
-    public void setPraisecount(String praisecount) {
-        this.praisecount = praisecount;
+    public void setShareCount(String shareCount) {
+        this.shareCount = shareCount;
     }
 
-    public String getTransmitcount() {
-        return transmitcount;
+    public String getPraiseCount() {
+        return praiseCount;
     }
 
-    public void setTransmitcount(String transmitcount) {
-        this.transmitcount = transmitcount;
+    public void setPraiseCount(String praiseCount) {
+        this.praiseCount = praiseCount;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public ArrayList<String> getPictureUrl() {
+        return pictureUrl;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
+    public void setPictureUrl(ArrayList<String> pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
-
-    public String getAuthor() {
-        return author;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public String getFaceurl() {
-        return faceurl;
+    public String getFanRelationship() {
+        return fanRelationship;
     }
 
-    public void setFaceurl(String faceurl) {
-        this.faceurl = faceurl;
+    public void setFanRelationship(String fanRelationship) {
+        this.fanRelationship = fanRelationship;
     }
 
+    @Override
+    public String toString() {
+        return "Blog{" +
+                "id='" + id + '\'' +
+                ", editorId='" + editorId + '\'' +
+                ", editorNickname='" + editorNickname + '\'' +
+                ", editorIconUrl='" + editorIconUrl + '\'' +
+                ", content='" + content + '\'' +
+                ", commentCount='" + commentCount + '\'' +
+                ", shareCount='" + shareCount + '\'' +
+                ", praiseCount='" + praiseCount + '\'' +
+                ", pictureUrl=" + pictureUrl +
+                ", createTime='" + createTime + '\'' +
+                ", fanRelationship='" + fanRelationship + '\'' +
+                '}';
+    }
 }

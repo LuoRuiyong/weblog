@@ -9,6 +9,16 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+
+        </android.support.v4.view.PagerTabStrip>
     </android.support.v4.view.ViewPager>
+
+    <include layout="@layout/layout_progressbar"/>
 
 </LinearLayout>

@@ -12,7 +12,9 @@ public class BaseModel extends DataSupport {
     public final static String PACKAGE_NAME = "com.luoruiyong.weblog.model.";
     public final static String CUSTOMER = "Customer";
     public final static String BLOG = "Blog";
-    public final static String COMMENT = "Comment";
+    public final static String BLOG_COMMENT = "BlogComment";
+    public final static String BLOG_SHARE = "BlogShare";
+    public final static String BLOG_PRAISE = "BlogPraise";
     public final static String PICTURE = "Picture";
     public final static String UNIVERSAL_MODEL = "UniversalModel";
 }
