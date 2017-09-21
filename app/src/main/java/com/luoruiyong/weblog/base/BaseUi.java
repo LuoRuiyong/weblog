@@ -2,7 +2,6 @@ package com.luoruiyong.weblog.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
@@ -16,9 +15,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.luoruiyong.weblog.model.Picture;
 import com.luoruiyong.weblog.util.LogUtil;
-import com.luoruiyong.weblog.util.SDUtil;
 
 import org.apache.http.NameValuePair;
 
@@ -31,6 +28,7 @@ import java.util.List;
 
 public class BaseUi extends AppCompatActivity {
 
+    public final static int REQUEST_PERMISSION_CODE = 1;
     private final static String CLASS_NAME = BaseUi.class.getSimpleName() + "-->";
     protected BaseHandler handler;
     protected BaseTaskPool taskPool;
@@ -39,9 +37,16 @@ public class BaseUi extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.progressBar = new ProgressBar(this);
         this.handler = new BaseHandler(this);
         this.taskPool = new BaseTaskPool(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(taskPool != null){
+            taskPool.ShutdownTaskPool();
+        }
     }
 
     /**
@@ -79,15 +84,8 @@ public class BaseUi extends AppCompatActivity {
             }
 
             @Override
-            public void onCompleteTask(Bitmap bitmap) {
-                super.onCompleteTask(bitmap);
-                //保存从服务器下载的头像
-                if(this.getId() == C.task.getUserIcon){
-                    SDUtil.saveImage(bitmap,this.getUrl(), Picture.TYPE_ICON);
-                }else{
-                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
-                }
-                sendMessage(C.handler.taskComplete,this.getId());
+            public void onCompleteTask() {
+                super.onCompleteTask();
             }
 
             @Override
@@ -114,15 +112,8 @@ public class BaseUi extends AppCompatActivity {
             }
 
             @Override
-            public void onCompleteTask(Bitmap bitmap) {
-                super.onCompleteTask(bitmap);
-                //保存从服务器下载的头像
-                if(this.getId() == C.task.getUserIcon){
-                    SDUtil.saveImage(bitmap,this.getUrl(), Picture.TYPE_ICON);
-                }else{
-                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
-                }
-                sendMessage(C.handler.taskComplete,this.getId());
+            public void onCompleteTask() {
+                super.onCompleteTask();
             }
 
             @Override
@@ -151,15 +142,8 @@ public class BaseUi extends AppCompatActivity {
             }
 
             @Override
-            public void onCompleteTask(Bitmap bitmap) {
-                super.onCompleteTask(bitmap);
-                //保存从服务器下载的头像
-                if(this.getId() == C.task.getUserIcon){
-                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_ICON);
-                }else{
-                    SDUtil.saveImage(bitmap, this.getUrl(), Picture.TYPE_IMAGE);
-                }
-                sendMessage(C.handler.taskComplete,this.getId());
+            public void onCompleteTask() {
+                super.onCompleteTask();
             }
 
             @Override

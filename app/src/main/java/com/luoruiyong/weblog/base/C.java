@@ -10,8 +10,8 @@ public class C {
      */
     public final static class dir{
         private static final String base = "/sdcard/weblog/";
-        public static final String icon = base + "icon/";
-        public static final String image = base + "image/";
+        public static final String cache = base + "cache/";
+        public static final String download = base + "download/";
     }
 
     /**
@@ -56,13 +56,17 @@ public class C {
         public final static int modifyCustomerSign      = 10023;
         public final static int modifyCustomerPassword  = 10024;
         public final static int modifyCustomerFace      = 10025;
-        public final static int getUserIcon             = 10026;
-        public final static int getUserIconUrl          = 10027;
-        public final static int getBlogPicture          = 10028;
+        public final static int getOriginalContactIcon = 10026;
+        public final static int getSampleContactIcon = 10027;
+        public final static int getContactIconUrl = 10028;
+
         public final static int checkAccount            = 10029;
         public final static int checkNickName           = 10030;
-        public final static int checkEmail              = 10031;
-        public final static int checkCellNumber         = 10032;
+        public final static int getOriginalBlogImage = 10031;
+        public final static int getSampleBlogImage = 10031;
+        public final static int getSampleCustomImage = 10032;
+        public final static int getOriginalImage = 10032;
+
     }
 
     /**
@@ -119,7 +123,7 @@ public class C {
         public final static String modifyCustomerPassword   = base + "customer/modifyCustomerPassword";
         public final static String modifyCustomerFace       = base + "customer/modifyCustomerFace";
         //所有待定接口都有test来暂时替代
-        public final static String getUserIconUrl = test + "getUserIconTest.php";   //待定
+        public final static String getContactIconUrl = test + "getUserIconUrlTest.php";   //待定
         public final static String checkAccount             = test;   //待定
         public final static String checkCellNumber          = test;   //待定
         public final static String checkEmail               = test;   //待定

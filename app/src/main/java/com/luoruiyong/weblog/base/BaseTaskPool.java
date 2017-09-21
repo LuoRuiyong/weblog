@@ -1,7 +1,6 @@
 package com.luoruiyong.weblog.base;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import com.luoruiyong.weblog.util.AppClient;
 import com.luoruiyong.weblog.util.LogUtil;
@@ -26,6 +25,13 @@ public class BaseTaskPool {
     public BaseTaskPool(Context context) {
         this.context = context;
         this.taskPool = Executors.newCachedThreadPool();
+    }
+
+    public void ShutdownTaskPool(){
+        if(!taskPool.isShutdown()){
+            taskPool.shutdown();
+        }
+        context = null;
     }
 
     /**
@@ -136,7 +142,6 @@ public class BaseTaskPool {
             try{
                 baseTask.onStart();
                 String httpRequest = null;  //请求数据结果
-                Bitmap bitmap = null;
                 if(delaytime > 0){
                     Thread.sleep(this.delaytime);
                 }
@@ -150,22 +155,12 @@ public class BaseTaskPool {
                                 //有请求参数，也有文件
                                 httpRequest = client.post(params, taskFiles);
                             } else {
-                                if(baseTask.getId() == C.task.getUserIcon){
-                                    //获取头像资源
-                                    bitmap = client.getImage(params);
-                                }else{
-                                    //获取普通资源
-                                    httpRequest = client.post(params);
-                                }
+                                //获取普通资源，有请求参数
+                                httpRequest = client.post(params);
                             }
                         } else {
-                            if(baseTask.getId() == C.task.getBlogPicture || baseTask.getId() == C.task.getUserIcon){
-                                //获取头像资源
-                                bitmap = client.getImage();
-                            }else{
-                                //获取普通资源
-                                httpRequest = client.get();
-                            }
+                            //获取普通资源,无参数
+                            httpRequest = client.get();
                         }
                     } catch (Exception e) {
                         LogUtil.d(CLASS_NAME + "异常信息A：" + e.getMessage());
@@ -180,10 +175,6 @@ public class BaseTaskPool {
                     //远程普通任务(返回的是字符串)
                     baseTask.onCompleteTask(httpRequest);
                     LogUtil.d(CLASS_NAME+"A");
-                }else if(bitmap != null){
-                    //远程图片下载任务(返回的是Bitmap)
-                    baseTask.onCompleteTask(bitmap);
-                    LogUtil.d(CLASS_NAME+"B");
                 }else{
                     //本地任务
                     baseTask.onCompleteTask();

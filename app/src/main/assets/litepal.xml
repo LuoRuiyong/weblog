@@ -8,6 +8,6 @@
         <mapping class="com.luoruiyong.weblog.model.BlogComment"/>
         <mapping class="com.luoruiyong.weblog.model.BlogShare"/>
         <mapping class="com.luoruiyong.weblog.model.BlogPraise"/>
-        <mapping class="com.luoruiyong.weblog.model.Picture"/>
+        <mapping class="com.luoruiyong.weblog.util.Picture"/>
     </list>
 </litepal>

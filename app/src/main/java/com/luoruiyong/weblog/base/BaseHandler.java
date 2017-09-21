@@ -59,10 +59,6 @@ public class BaseHandler extends Handler{
     private void taskComplete(Message msg) {
         Bundle bundle = msg.getData();
         int taskId = bundle.getInt(BaseHandler.TASK_ID);
-        if(taskId == C.task.getUserIcon ||taskId == C.task.getBlogPicture){
-            ui.onCompleteTask(taskId);
-            return;
-        }
         String result = bundle.getString(BaseHandler.DATA);
         if(result != null){
             try {

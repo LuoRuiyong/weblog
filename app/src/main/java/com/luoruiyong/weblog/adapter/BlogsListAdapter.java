@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import com.luoruiyong.weblog.R;
 import com.luoruiyong.weblog.model.Blog;
-import com.luoruiyong.weblog.model.Picture;
 import com.luoruiyong.weblog.myview.BlogPictureViewGroup;
+import com.luoruiyong.weblog.util.AppCache;
 import com.luoruiyong.weblog.util.LogUtil;
-import com.luoruiyong.weblog.util.SDUtil;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.ViewHolder> implements View.OnClickListener{
     private Context mContext;
     private OnItemClickListener itemClickListener;
-    private OnBindViewHolderListener bindViewHolderListener;
     private ArrayList<Blog> blogsList;
     private static final String CLASS_NAME = BlogsListAdapter.class.getSimpleName()+"-->";
 
@@ -97,10 +95,6 @@ public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.Vie
         ArrayList<String> pictureUrl = blog.getPictureUrl();
         //第一次绑定
         if (holder.iv_user_icon.getTag()==null){
-            //逐步回调UiIndex中的方法，联网加载头像和微博图片
-            if(bindViewHolderListener!=null) {
-                bindViewHolderListener.bindViewHolder(position);
-            }
             //设置标记，点击事件需要使用到
             holder.iv_user_icon.setTag(position);
             holder.tv_nick_name.setTag(position);
@@ -130,12 +124,12 @@ public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.Vie
         int childCount = holder.blogPictureViewGroup.getChildCount();
         for (int i = 0; i < childCount; i++) {
             ImageView image = (ImageView) holder.blogPictureViewGroup.getChildAt(i);
-            Bitmap bitmap = SDUtil.getImage(pictureUrl.get(i), Picture.TYPE_IMAGE);
+            Bitmap bitmap = AppCache.getSampleCacheBlogImage(mContext,pictureUrl.get(i));
             if(bitmap != null){
                 image.setImageBitmap(bitmap);
             }
         }
-        Bitmap bitmap = SDUtil.getImage(iconUrl,Picture.TYPE_ICON);
+        Bitmap bitmap = AppCache.getSampleCacheContactIcon(mContext,iconUrl);
         if(bitmap != null){
             holder.iv_user_icon.setImageBitmap(bitmap);
         }
@@ -179,10 +173,6 @@ public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.Vie
         this.itemClickListener = lister;
     }
 
-    public void setOnBindViewHolderListener(OnBindViewHolderListener lister){
-        this.bindViewHolderListener = lister;
-    }
-
     @Override
     public void onClick(View view) {
         if(itemClickListener != null){
@@ -192,9 +182,5 @@ public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.Vie
 
     public  interface OnItemClickListener{
         void onItemClick(View view,int position);
-    }
-
-    public interface OnBindViewHolderListener {
-        void bindViewHolder(int position);
     }
 }

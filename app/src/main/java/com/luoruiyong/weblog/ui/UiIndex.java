@@ -1,8 +1,10 @@
 package com.luoruiyong.weblog.ui;
 
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +27,7 @@ import com.luoruiyong.weblog.fragment.FgMessage;
 import com.luoruiyong.weblog.fragment.FgProfile;
 import com.luoruiyong.weblog.model.Blog;
 import com.luoruiyong.weblog.model.Picture;
+import com.luoruiyong.weblog.util.IOUtil;
 import com.luoruiyong.weblog.util.LogUtil;
 
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ import java.util.ArrayList;
  * Created by Administrator on 2017/9/9.
  */
 
-public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,FgBlogsList.OnBindViewHolderListener{
+public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener, IOUtil.OnLoadPictureTaskListener{
     private static final String CLASS_NAME = UiIndex.class.getSimpleName() + "-->";
     private ViewPager vp_body ;
     private ImageView iv_home;
@@ -131,7 +134,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,F
     }
 
     /**
-     * 联网请求结果回调函数
+     * 联网信息请求完成回调函数
      * @param taskId  远程任务编号号
      * @param message  服务器返回的内容（已初步处理）
      */
@@ -168,20 +171,61 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,F
         rl_progress_layout.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onCompleteTask(int taskId) {
-        LogUtil.d(CLASS_NAME + "异步请求任务完成，回调函数");
-        if(selectedPage == PUBLIC_BLOGS_PAGE){
-            ((FgHome)fragmentList.get(0)).notifyPublicDataChange();
-        }else{
-            ((FgHome)fragmentList.get(0)).notifyConcernedDataChange();
-        }
-    }
-
+    /**
+     * 联网信息请求发生错误回调函数
+     * @param taskId  任务编号
+     * @param errorInfo  错误信息
+     */
     @Override
     public void onNetworkError(int taskId, String errorInfo) {
         rl_progress_layout.setVisibility(View.GONE);
         LogUtil.d(CLASS_NAME+"远程任务失败，ID:"+taskId+"  原因："+errorInfo);
+    }
+
+    /**
+     * 远程图片下载任务开始时回调方法
+     * @param taskId  任务编号
+     */
+    @Override
+    public void onLoadPictureStart(int taskId) {
+        LogUtil.d(CLASS_NAME+"开始远程下载图片任务，编号："+taskId);
+    }
+
+    /**
+     * 远程图片下载任务发生错误时回调方法
+     * @param taskId   任务编号
+     * @param error 错误信息
+     */
+    @Override
+    public void onLoadPictureError(int taskId, String error) {
+        LogUtil.d(CLASS_NAME+"远程下载图片任务出错，编号："+taskId+",错误信息："+error);
+    }
+
+    /**
+     * 远程图片下载任务完成时回调方法
+     * @param taskId
+     */
+    @Override
+    public void onLoadPictureComplete(final int taskId) {
+       runOnUiThread(new Runnable() {
+           @Override
+           public void run() {
+               LogUtil.d(CLASS_NAME+"远程下载图片任务完成，编号："+taskId);
+               switch (taskId){
+                   case C.task.getSampleContactIcon:
+                   case C.task.getSampleBlogImage:
+                       if(selectedPage == PUBLIC_BLOGS_PAGE){
+                           LogUtil.d(CLASS_NAME+"更新广场微博列表");
+                           ((FgHome)fragmentList.get(0)).notifyPublicDataChange();
+                       }else{
+                           LogUtil.d(CLASS_NAME+"更新关注微博列表");
+                           ((FgHome)fragmentList.get(0)).notifyConcernedDataChange();
+                       }
+                       break;
+               }
+           }
+       });
+
     }
 
     /**
@@ -305,32 +349,12 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,F
 
     private Picture getPicture(int order,int position){
         Picture picture = new Picture();
-        picture.setType(Picture.TYPE_IMAGE);
         if(selectedPage == PUBLIC_BLOGS_PAGE){
             picture.setUrl(publicBlogsList.get(position).getPictureUrl().get(order));
         }else {
             picture.setUrl(concernedBlogsList.get(position).getPictureUrl().get(order));
         }
         return picture;
-    }
-
-    @Override
-    public void bindViewHolder(int position) {
-        ArrayList<String> pictureUrl;
-        String iconUrl;
-        if(selectedPage == PUBLIC_BLOGS_PAGE){
-            pictureUrl = publicBlogsList.get(position).getPictureUrl();
-            iconUrl = publicBlogsList.get(position).getEditorIconUrl();
-        }else{
-            pictureUrl = concernedBlogsList.get(position).getPictureUrl();
-            iconUrl = concernedBlogsList.get(position).getEditorIconUrl();
-        }
-        doAsyncTask(C.task.getUserIcon,iconUrl,0);
-        if(pictureUrl != null && pictureUrl.size() > 0){
-            for(String url:pictureUrl){
-                doAsyncTask(C.task.getBlogPicture,url,0);
-            }
-        }
     }
 
     //底部功能按钮点击事件监听器
@@ -415,5 +439,20 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,F
         vp_body.setCurrentItem(item);
         imageView.setImageResource(imageResource);
         textView.setTextColor(getResources().getColor(R.color.lightblue));
+    }
+
+    //权限申请结果回调函数
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case BaseUi.REQUEST_PERMISSION_CODE:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    LogUtil.d("成功申请内存读写权限");
+
+                }else{
+                    LogUtil.d("用户拒绝应用使用内存读写权限");
+                    toast("您拒绝了应用使用储存权限，无法保存头像信息");
+                }
+        }
     }
 }

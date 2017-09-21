@@ -21,14 +21,13 @@ import java.util.ArrayList;
  * Created by Administrator on 2017/9/15.
  */
 
-public class FgBlogsList extends Fragment implements BlogsListAdapter.OnItemClickListener,BlogsListAdapter.OnBindViewHolderListener {
+public class FgBlogsList extends Fragment implements BlogsListAdapter.OnItemClickListener {
 
     private static final String CLASS_NAME = FgBlogsList.class.getSimpleName()+"-->";
     private View view;
     private RecyclerView rv_blogs_list;
     private BlogsListAdapter adapter;
     private OnItemClickListener itemClickListener;
-    private OnBindViewHolderListener bindViewHolderListener;
 
     @Nullable
     @Override
@@ -44,7 +43,6 @@ public class FgBlogsList extends Fragment implements BlogsListAdapter.OnItemClic
         rv_blogs_list.setLayoutManager(manager);
         adapter = new BlogsListAdapter(getContext());
         adapter.setOnItemClickListener(this);
-        adapter.setOnBindViewHolderListener(this);
         rv_blogs_list.setAdapter(adapter);
     }
 
@@ -63,7 +61,6 @@ public class FgBlogsList extends Fragment implements BlogsListAdapter.OnItemClic
         super.onAttach(context);
         try{
             itemClickListener = (OnItemClickListener) context;
-            bindViewHolderListener = (OnBindViewHolderListener) context;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -77,19 +74,7 @@ public class FgBlogsList extends Fragment implements BlogsListAdapter.OnItemClic
         }
     }
 
-    @Override
-    public void bindViewHolder(int position) {
-        if(bindViewHolderListener != null){
-            LogUtil.d(CLASS_NAME+"绑定ViewHolder事件，回传到Activity");
-            bindViewHolderListener.bindViewHolder(position);
-        }
-    }
-
     public interface OnItemClickListener{
         void onItemClick(View view,int position);
-    }
-
-    public interface OnBindViewHolderListener {
-        void bindViewHolder(int position);
     }
 }

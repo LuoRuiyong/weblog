@@ -55,7 +55,7 @@ public class AppUtil {
                 key.append(Integer.toHexString(0xFF & b));
             }
             fileName = key.toString();
-            LogUtil.d(CLASS_NAME+"tURL通过MD5加密后得到的文件名："+fileName);
+            LogUtil.d(CLASS_NAME+"URL通过MD5加密后得到的文件名："+fileName);
         } catch (NoSuchAlgorithmException e) {
             LogUtil.d(CLASS_NAME+"NoSuchAlgorithmException:" + e.getMessage());
         } catch (IOException e){

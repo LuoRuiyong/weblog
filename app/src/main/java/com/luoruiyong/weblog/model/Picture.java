@@ -6,29 +6,22 @@ import com.luoruiyong.weblog.base.BaseModel;
  * Created by Administrator on 2017/9/7.
  */
 
-public class Picture extends BaseModel {
-    public static final String TYPE_ICON = "icon";
-    public static final String TYPE_IMAGE = "image";
+public class Picture extends BaseModel{
+    public static final String TYPE_PNG = "png";
+    public static final String TYPE_JEPG = "jpg";
+    public static final int BLOG_IMAGE_WIDTH = 350;
+    public static final int BLOG_IMAGE_HEIGHT = 350;
+    public static final int CONTACT_ICON_WIDTH = 80;
+    public static final int CONTACT_ICON_HEIGHT = 80;
+    public static final int PATTERN_ORIGINAL_IMAGE = 0;
+    public static final int PATTERN_SAMPLE_CONTACT_ICON = 1;
+    public static final int PATTERN_SAMPLE_BLOG_IMAGE = 2;
+    public static final int PATTERN_SAMPLE_CUSTOM_IMAGE = 3;
 
 
-    private String type;
     private String url;
 
-    public Picture() {
-    }
-
-    public Picture(String type, String url) {
-        this.type = type;
-        this.url = url;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    public Picture() {}
 
     public String getUrl() {
         return url;

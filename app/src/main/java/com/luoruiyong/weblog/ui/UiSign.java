@@ -180,7 +180,7 @@ public class UiSign extends BaseUi{
      */
     public void openAlbum(){
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType("image/*");
+        intent.setType("cache/*");
         LogUtil.d("调用系统图库，选择本地图片作为头像");
         startActivityForResult(intent,CHOOSE_ICON);
     }

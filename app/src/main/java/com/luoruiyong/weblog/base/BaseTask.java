@@ -1,7 +1,5 @@
 package com.luoruiyong.weblog.base;
 
-import android.graphics.Bitmap;
-
 import com.luoruiyong.weblog.util.LogUtil;
 
 /**任务类,拥有五个任务状态回调方法
@@ -55,10 +53,6 @@ public class BaseTask {
     }
 
     public void onCompleteTask(){
-        LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
-    }
-
-    public void onCompleteTask(Bitmap bitmap){
         LogUtil.d(CLASS_NAME+"任务已经完成，编号："+id);
     }
 
