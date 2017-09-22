@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,8 +29,10 @@ import java.util.List;
 
 public class BaseUi extends AppCompatActivity {
 
-    public final static int REQUEST_PERMISSION_CODE = 1;
     private final static String CLASS_NAME = BaseUi.class.getSimpleName() + "-->";
+    public final static int REQUEST_PERMISSION_CODE = 1;
+    public static int WIDTH;
+    public static int HEIGHT;
     protected BaseHandler handler;
     protected BaseTaskPool taskPool;
     protected ProgressBar progressBar;
@@ -39,6 +42,11 @@ public class BaseUi extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.handler = new BaseHandler(this);
         this.taskPool = new BaseTaskPool(this);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        WIDTH = dm.widthPixels;
+        HEIGHT = dm.heightPixels;
+        LogUtil.d(CLASS_NAME+"屏幕像素，宽："+WIDTH+"  高："+HEIGHT);
     }
 
     @Override

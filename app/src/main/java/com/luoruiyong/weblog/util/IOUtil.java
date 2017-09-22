@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import com.luoruiyong.weblog.base.C;
 import com.luoruiyong.weblog.model.Picture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 public class IOUtil {
 
     private final static String CLASS_NAME = IOUtil.class.getSimpleName()+"-->";
-    private static HashMap<String,Integer> requestUrlMap;
+    private static HashMap<String,Integer> requestUrlMap;  //url请求记录图
     private IOUtil(){}
 
     private static void initIOUtil(){
@@ -43,11 +44,13 @@ public class IOUtil {
      * @param width    指定图片的宽度
      * @param height   指定图片的高度
      */
-    public static void getSampleBitmapRemote(final Context context, final int taskId, final String pictureUrl, final int pattern, final int width , final int height){
+    public static void getBitmapRemote(final Context context, final int taskId, final String pictureUrl, final int width , final int height){
         initIOUtil();
         if (requestUrlMap.containsKey(pictureUrl)){
+            //如果下载正在进行中，不再开启新线程
             return;
         }
+        //添加请求记录
         requestUrlMap.put(pictureUrl,0);
         LogUtil.d(CLASS_NAME+"当前下载图片线程数："+requestUrlMap.size());
         final OnLoadPictureTaskListener listener = (OnLoadPictureTaskListener) context;
@@ -61,6 +64,7 @@ public class IOUtil {
             public void run() {
                 URL url = null;
                 Bitmap bitmap = null;
+                InputStream inputStream = null;
                 HttpURLConnection connection = null;
                 try{
                     listener.onLoadPictureStart(taskId);
@@ -70,50 +74,68 @@ public class IOUtil {
                     connection.setConnectTimeout(5*1000);
                     connection.setReadTimeout(5*1000);
                     connection.setDoInput(true);
-                    InputStream inputStream = connection.getInputStream();
+                    inputStream = connection.getInputStream();
                     if(inputStream !=  null){
-                        switch (pattern){
-                            case Picture.PATTERN_ORIGINAL_IMAGE:
+                        switch (taskId){
+                            case C.task.getOriginalImage:
                                 //下载原图
                                 bitmap = BitmapFactory.decodeStream(inputStream);
                                 break;
-                            case Picture.PATTERN_SAMPLE_CONTACT_ICON:
+                            case C.task.getSampleContactIcon:
                                 //下载头像缩略图
                                 bitmap = getSampleContactIcon(context,inputStream,pictureUrl);
                                 break;
-                            case Picture.PATTERN_SAMPLE_BLOG_IMAGE:
+                            case C.task.getSampleBlogImage:
                                 //下载微博图片缩略图
                                 bitmap = getSampleBlogImage(context,inputStream,pictureUrl);
                                 break;
-                            case Picture.PATTERN_SAMPLE_CUSTOM_IMAGE:
+                            case C.task.getSampleCustomImage:
+                            case C.task.getSampleFullScreenImage:
                                 //下载自定义缩略图
                                 bitmap = getSampleCustomImage(context,inputStream,pictureUrl,width,height);
                                 break;
                         }
-                        inputStream.close();
-                        if(pattern != Picture.PATTERN_ORIGINAL_IMAGE){
-                            //下载的图片不是原图，保存到内存区
-                            MemoryUtil.addBitmap(pictureUrl,bitmap);
+                        if(bitmap == null){
+                            //下载失败
+                            listener.onLoadPictureError(taskId,C.err.stream);
+                        }else {
+                            //下载成功
+                            if(taskId == C.task.getOriginalImage){
+                                //下载原图,保存到本地download目录下
+                                SDUtil.saveDownloadImage(context,bitmap,pictureUrl);
+                            }else if(taskId == C.task.getSampleFullScreenImage){
+                                //下载全屏缩略图，保存到另一个缓存区
+                                MemoryUtil.addFullScreenBitmap(pictureUrl,bitmap);
+                            }else{
+                                //下载缩略图，保存到内存和本地cache目录下
+                                MemoryUtil.addBitmap(pictureUrl,bitmap);
+                                SDUtil.saveCacheImage(context,bitmap,pictureUrl);
+                            }
+                            listener.onLoadPictureComplete(taskId,pictureUrl);
                         }
-                        requestUrlMap.remove(pictureUrl);
-                        listener.onLoadPictureComplete(taskId);
                     }
                 }catch (ConnectException e){
-                    requestUrlMap.remove(pictureUrl);
                     listener.onLoadPictureError(taskId,C.err.server);
-                    LogUtil.d(CLASS_NAME+C.err.server);
                 }catch (IOException e){
+                    listener.onLoadPictureError(taskId,C.err.stream);
+                }finally {
+                    //移除图片请求记录
                     requestUrlMap.remove(pictureUrl);
-                    listener.onLoadPictureError(taskId,"输入流错误");
-                    LogUtil.d(CLASS_NAME+"输入流错误");
+                    if(inputStream != null){
+                        try {
+                            inputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }).start();
     }
 
     //远程获取图片
-    public static void getBitmapRemote(final Context context, final int taskId, final String pictureUrl, final int pattern){
-        getSampleBitmapRemote(context,taskId,pictureUrl,pattern,0,0);
+    public static void getBitmapRemote(final Context context, final int taskId, final String pictureUrl){
+        getBitmapRemote(context,taskId,pictureUrl,0,0);
     }
 
     //加载头像缩略图
@@ -134,23 +156,48 @@ public class IOUtil {
      * @return
      */
     private static Bitmap getSampleCustomImage(Context context,InputStream inputStream,String pictureUrl, int width, int height){
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        SDUtil.saveImage(context,bitmap,pictureUrl);
-        String fileName = SDUtil.getRealFileName(pictureUrl);
-        inputStream.mark(0);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        int sampleRatio = SDUtil.getSampleRatio(options.outWidth,options.outHeight,width,height);
-        BitmapFactory.decodeFile(fileName,options);
-        options.inJustDecodeBounds = false;
-        options.inSampleSize = sampleRatio;
-        bitmap = BitmapFactory.decodeFile(fileName,options);
-        if(bitmap == null){
-            LogUtil.d(CLASS_NAME+"下载缩放图失败");
-        }else {
-            LogUtil.d(CLASS_NAME+"成功下载缩放图");
+        byte[] data = getBytesFromInputStream(inputStream);
+        if(data != null){
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(data,0,data.length,options);
+            options.inSampleSize = SDUtil.getSampleRatio(options.outWidth,options.outHeight,width,height);
+            options.inJustDecodeBounds = false;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length,options);
+            if(bitmap == null){
+                LogUtil.d(CLASS_NAME+"下载缩放图失败");
+            }else {
+                LogUtil.d(CLASS_NAME+"成功下载缩放图");
+                MemoryUtil.addBitmap(pictureUrl,bitmap);
+                SDUtil.saveCacheImage(context,bitmap,pictureUrl);
+                return bitmap;
+            }
         }
-        return bitmap;
+        return null;
+    }
+
+    /**
+     * 将输入流转化为字节数组
+     * @param inputStream 图片输入流
+     * @return  图片字节数组
+     */
+    private static byte[] getBytesFromInputStream(InputStream inputStream){
+        try
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024 * 8];
+            int len;
+            while ((len = inputStream.read(buffer) )!= -1){
+                 bos.write(buffer,0,len);
+            }
+            bos.flush();
+            bos.close();
+            LogUtil.d(CLASS_NAME+"成功将流转化为字节数组");
+            return bos.toByteArray();
+        }catch (IOException e){
+            LogUtil.d(CLASS_NAME+"将流转化为字节数组发生错误");
+            return null;
+        }
     }
 
     /**
@@ -162,6 +209,6 @@ public class IOUtil {
         //下载图片出错回调方法
         void onLoadPictureError(int taskId,String error);
         //图片下载完成回调方法
-        void onLoadPictureComplete(int taskId);
+        void onLoadPictureComplete(int taskId,String url);
     }
 }

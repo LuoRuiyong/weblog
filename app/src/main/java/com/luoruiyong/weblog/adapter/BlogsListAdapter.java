@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.luoruiyong.weblog.R;
+import com.luoruiyong.weblog.base.C;
 import com.luoruiyong.weblog.model.Blog;
 import com.luoruiyong.weblog.myview.BlogPictureViewGroup;
 import com.luoruiyong.weblog.util.AppCache;
@@ -124,12 +125,12 @@ public class BlogsListAdapter extends RecyclerView.Adapter <BlogsListAdapter.Vie
         int childCount = holder.blogPictureViewGroup.getChildCount();
         for (int i = 0; i < childCount; i++) {
             ImageView image = (ImageView) holder.blogPictureViewGroup.getChildAt(i);
-            Bitmap bitmap = AppCache.getSampleCacheBlogImage(mContext,pictureUrl.get(i));
+            Bitmap bitmap = AppCache.getSampleImage(mContext, C.task.getSampleBlogImage,pictureUrl.get(i));
             if(bitmap != null){
                 image.setImageBitmap(bitmap);
             }
         }
-        Bitmap bitmap = AppCache.getSampleCacheContactIcon(mContext,iconUrl);
+        Bitmap bitmap = AppCache.getSampleImage(mContext,C.task.getSampleContactIcon,iconUrl);
         if(bitmap != null){
             holder.iv_user_icon.setImageBitmap(bitmap);
         }

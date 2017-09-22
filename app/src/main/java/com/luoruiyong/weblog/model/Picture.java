@@ -13,11 +13,6 @@ public class Picture extends BaseModel{
     public static final int BLOG_IMAGE_HEIGHT = 350;
     public static final int CONTACT_ICON_WIDTH = 80;
     public static final int CONTACT_ICON_HEIGHT = 80;
-    public static final int PATTERN_ORIGINAL_IMAGE = 0;
-    public static final int PATTERN_SAMPLE_CONTACT_ICON = 1;
-    public static final int PATTERN_SAMPLE_BLOG_IMAGE = 2;
-    public static final int PATTERN_SAMPLE_CUSTOM_IMAGE = 3;
-
 
     private String url;
 

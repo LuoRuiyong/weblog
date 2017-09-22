@@ -12,11 +12,11 @@ import com.luoruiyong.weblog.util.LogUtil;
  */
 
 public class BlogPictureViewGroup extends ViewGroup {
-
     private int childCount;
     private int childWidth;
     private int childHeight;
     private int margin = 10;
+
     private final static String CLASS_NAME = BlogPictureViewGroup.class.getSimpleName()+"-->";
 
     public BlogPictureViewGroup(Context context) {

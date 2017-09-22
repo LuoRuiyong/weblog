@@ -65,7 +65,8 @@ public class C {
         public final static int getOriginalBlogImage = 10031;
         public final static int getSampleBlogImage = 10031;
         public final static int getSampleCustomImage = 10032;
-        public final static int getOriginalImage = 10032;
+        public final static int getOriginalImage = 10033;
+        public final static int getSampleFullScreenImage = 10034;
 
     }
 
@@ -138,6 +139,7 @@ public class C {
         public final static String jsonFormat = "JSON数据不匹配";
         public final static String noData = "服务器返回结果为空";
         public final static String modelError = "数据与模型不匹配";
+        public final static String stream = "输入输出流异常";
 
 
     }

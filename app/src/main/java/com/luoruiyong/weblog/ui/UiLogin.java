@@ -189,7 +189,7 @@ public class UiLogin extends BaseUi implements IOUtil.OnLoadPictureTaskListener{
     private class MyOnFocusChangeListener implements View.OnFocusChangeListener {
         @Override
         public void onFocusChange(View view, boolean b) {
-            if(!b){
+            if(!b && view.getId() == R.id.account){
                 //账号输入框失去焦点的时候，初步检测账号并尝试获取头像资源
                 account = et_account.getText().toString().trim();
                 boolean account_tag = AppUtil.checkLoginAccount(account);
@@ -306,7 +306,7 @@ public class UiLogin extends BaseUi implements IOUtil.OnLoadPictureTaskListener{
                     Picture picture = (Picture) message.getResult(BaseModel.PICTURE);
                     iconUrl = picture.getUrl();
                     LogUtil.d(CLASS_NAME+"尝试下载头像："+iconUrl);
-                    Bitmap bitmap = AppCache.getSampleCacheContactIcon(UiLogin.this,iconUrl);
+                    Bitmap bitmap = AppCache.getSampleImage(UiLogin.this,C.task.getSampleContactIcon,iconUrl);
                     if(bitmap != null){
                         iv_user_icon.setImageBitmap(bitmap);
                     }
@@ -378,7 +378,7 @@ public class UiLogin extends BaseUi implements IOUtil.OnLoadPictureTaskListener{
      * @param taskId 任务编号
      */
     @Override
-    public void onLoadPictureComplete(int taskId) {
+    public void onLoadPictureComplete(int taskId,String picture) {
         LogUtil.d(CLASS_NAME+"远程下载图片任务完成，任务编号："+taskId);
         switch (taskId){
             case C.task.getSampleContactIcon:
@@ -410,9 +410,14 @@ public class UiLogin extends BaseUi implements IOUtil.OnLoadPictureTaskListener{
      */
     private void loadUserIcon(){
         if(!TextUtils.isEmpty(iconUrl)){
-            Bitmap bitmap = AppCache.getSampleCacheContactIcon(UiLogin.this,iconUrl);
+            final Bitmap bitmap = AppCache.getSampleImage(UiLogin.this,C.task.getSampleContactIcon,iconUrl);
             if(bitmap != null){
-                iv_user_icon.setImageBitmap(bitmap);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        iv_user_icon.setImageBitmap(bitmap);
+                    }
+                });
             }
         }
     }

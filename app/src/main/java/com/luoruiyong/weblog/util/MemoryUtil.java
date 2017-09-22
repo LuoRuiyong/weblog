@@ -13,6 +13,7 @@ import android.support.v4.util.LruCache;
 public class MemoryUtil {
     private static final String CLASS_NAME = MemoryUtil.class.getSimpleName()+"-->";
     private static LruCache<String,Bitmap> memoryCache;
+    private static LruCache<String,Bitmap> fullScreenMemoryCache;
 
     private MemoryUtil(){}
 
@@ -27,7 +28,21 @@ public class MemoryUtil {
                     return bitmap.getByteCount() / 1024;
                 }
             };
-            LogUtil.d(CLASS_NAME+"初始化内存缓存，缓存区大小为："+cacheSize+"KB");
+            LogUtil.d(CLASS_NAME+"初始化memoryCache内存缓存，缓存区大小为："+cacheSize+"KB");
+        }
+    }
+
+    private static void initFullScreenMemoryCache(){
+        if(fullScreenMemoryCache == null){
+            int maxMemory = (int)Runtime.getRuntime().maxMemory() /1024;
+            int cacheSize = maxMemory/10;
+            fullScreenMemoryCache = new LruCache<String,Bitmap>(cacheSize){
+                @Override
+                protected int sizeOf(String key, Bitmap bitmap) {
+                    return bitmap.getHeight()*bitmap.getWidth() / 1024;
+                }
+            };
+            LogUtil.d(CLASS_NAME+"初始化fullScreenMemoryCache内存缓存，缓存区大小为："+cacheSize+"KB");
         }
     }
 
@@ -44,6 +59,14 @@ public class MemoryUtil {
         }
     }
 
+    public static void addFullScreenBitmap(String url,Bitmap bitmap){
+        initFullScreenMemoryCache();
+        if(fullScreenMemoryCache.get(url) == null && bitmap != null){
+            fullScreenMemoryCache.put(url,bitmap);
+            LogUtil.d(CLASS_NAME+"添加键为："+url+"的位图到缓冲区");
+        }
+    }
+
     /**
      * 从内存缓存区取出指定位图
      * @param url  图片的资源路径
@@ -53,9 +76,21 @@ public class MemoryUtil {
         initMemoryCache();
         Bitmap bitmap= memoryCache.get(url);
         if(bitmap == null){
-            LogUtil.d(CLASS_NAME+"缓冲区中不存在键为："+url+"的位图");
+            LogUtil.d(CLASS_NAME+"缓冲区memoryCache中不存在键为："+url+"的位图");
         }else{
-            LogUtil.d(CLASS_NAME+"从缓冲区取出键为："+url+"的位图");
+            LogUtil.d(CLASS_NAME+"从缓冲区memoryCache取出键为："+url+"的位图");
+        }
+
+        return bitmap;
+    }
+
+    public static Bitmap getFullScreenBitmap(String url){
+        initFullScreenMemoryCache();
+        Bitmap bitmap= fullScreenMemoryCache.get(url);
+        if(bitmap == null){
+            LogUtil.d(CLASS_NAME+"缓冲区fullScreenMemoryCache中不存在键为："+url+"的位图");
+        }else{
+            LogUtil.d(CLASS_NAME+"从缓冲区fullScreenMemoryCache取出键为："+url+"的位图");
         }
 
         return bitmap;

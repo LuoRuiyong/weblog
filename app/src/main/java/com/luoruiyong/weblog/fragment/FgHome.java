@@ -60,6 +60,12 @@ public class FgHome extends Fragment {
         LogUtil.d(CLASS_NAME+"成功添加碎片");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        vp_main.setCurrentItem(0);
+    }
+
     public void initPublicBlogData(ArrayList<Blog> blogsList){
         fragmentList.get(0).initData(blogsList);
 
@@ -82,7 +88,7 @@ public class FgHome extends Fragment {
        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
        @Override
        public void onPageSelected(int position) {
-           ((UiIndex)getActivity()).setSelectedPage(position);
+           ((UiIndex)getActivity()).setSelectedHomePage(position);
        }
 
        @Override

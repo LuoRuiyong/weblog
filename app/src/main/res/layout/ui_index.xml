@@ -19,5 +19,7 @@
         <include layout="@layout/layout_bottom_button"/>
     </LinearLayout>
 
+    <include layout="@layout/layout_browse_image"/>
+
     <include layout="@layout/layout_progressbar"/>
 </FrameLayout>

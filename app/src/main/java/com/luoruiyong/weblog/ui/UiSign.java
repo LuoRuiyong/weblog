@@ -3,6 +3,7 @@ package com.luoruiyong.weblog.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.luoruiyong.weblog.base.BaseMessage;
 import com.luoruiyong.weblog.base.BaseModel;
 import com.luoruiyong.weblog.base.BaseUi;
 import com.luoruiyong.weblog.base.C;
+import com.luoruiyong.weblog.model.Picture;
 import com.luoruiyong.weblog.model.UniversalModel;
 import com.luoruiyong.weblog.util.AppUtil;
 import com.luoruiyong.weblog.util.LogUtil;
@@ -180,7 +182,7 @@ public class UiSign extends BaseUi{
      */
     public void openAlbum(){
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType("cache/*");
+        intent.setType("image/*");
         LogUtil.d("调用系统图库，选择本地图片作为头像");
         startActivityForResult(intent,CHOOSE_ICON);
     }
@@ -515,7 +517,14 @@ public class UiSign extends BaseUi{
                 LogUtil.d(CLASS_NAME+"解析选择结果");
                 imagePath = SDUtil.chooseImage(UiSign.this,data);
                 if(!TextUtils.isEmpty(imagePath)){
-                    iv_user_icon.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(imagePath,options);
+                    options.inSampleSize = SDUtil.getSampleRatio(options.outWidth,options.outHeight,
+                            Picture.CONTACT_ICON_WIDTH,Picture.CONTACT_ICON_HEIGHT);
+                    options.inJustDecodeBounds = false;
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath,options);
+                    iv_user_icon.setImageBitmap(bitmap);
                     LogUtil.d(CLASS_NAME+"头像添加成功");
                 }else{
                     toast("添加头像失败");
