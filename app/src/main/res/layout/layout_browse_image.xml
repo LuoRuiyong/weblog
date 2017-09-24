@@ -17,13 +17,12 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="#ffffff"
-        android:text="1/2"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"/>
 
     <ImageView
         android:id="@+id/save_image"
-        android:layout_width="25dp"
+        android:layout_width="30dp"
         android:layout_height="25dp"
         android:padding="1dp"
         android:scaleType="centerInside"
@@ -44,8 +43,8 @@
         android:textColor="#ffffff"
         android:maxLines="4"
         android:ellipsize="end"
-        android:lineSpacingMultiplier="1.2"
-        android:text="啥的根深蒂固的双方各设定是的弗格森单方事故sad赋给地方"/>
+        android:lineSpacingMultiplier="1.1"
+        android:text=""/>
 
     <!--<TextView-->
         <!--android:id="@+id/save_image"-->

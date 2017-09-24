@@ -77,8 +77,10 @@ public class SlideShowViewGroup extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int moveX = (int) event.getX();
                 int distance = x - moveX;
-                if(!(distance > 0 && index == childCount-1) && !(distance < 0 && index == 0)){
-                    scrollBy(distance,0);
+                if(index == 0 && distance < 0 || index == childCount-1 && distance > 0){
+                    scrollBy(distance/4,0);
+                }else{
+                    scrollBy(distance, 0);
                 }
                 x = moveX;
                 break;

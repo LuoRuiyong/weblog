@@ -14,6 +14,10 @@
             android:id="@+id/tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:background="#ffffff">
 
         </android.support.v4.view.PagerTabStrip>

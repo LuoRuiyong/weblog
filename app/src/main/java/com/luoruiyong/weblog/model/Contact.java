@@ -2,30 +2,24 @@ package com.luoruiyong.weblog.model;
 
 import com.luoruiyong.weblog.base.BaseModel;
 
-/**用户类,用于记录用户登录信息，不允许直接创建对象
+/**用户类，用于存储微博上其他用户的信息，
  * Created by Administrator on 2017/9/7.
  */
 
-public class Customer extends BaseModel {
+public class Contact extends BaseModel {
 
     private String id;          //用户id
-    private String sid;         //会话id
-    private String account;     //账户名
     private String nickName;    //昵称
     private String introduction;    //个性签名
-    private String cellNumber;  //手机号码
-    private String email;       //电子邮箱
     private String address;     //地址
     private String iconUrl;     //头像资源在服务器中的路径
     private String blogCount;  //微博数量
     private String fansCount;   //粉丝数量
     private String concernCount;//关注数量
 
-    private static boolean login = false;
-    private static Customer customer = null;
+    public Contact(){
 
-
-    public Customer() {}
+    }
 
     public String getId() {
         return id;
@@ -33,22 +27,6 @@ public class Customer extends BaseModel {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getNickName() {
@@ -67,12 +45,12 @@ public class Customer extends BaseModel {
         this.introduction = introduction;
     }
 
-    public String getCellNumber() {
-        return cellNumber;
+    public String getAddress() {
+        return address;
     }
 
-    public void setCellNumber(String cellNumber) {
-        this.cellNumber = cellNumber;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getIconUrl() {
@@ -83,12 +61,12 @@ public class Customer extends BaseModel {
         this.iconUrl = iconUrl;
     }
 
-    public String getBlogsCount() {
+    public String getBlogCount() {
         return blogCount;
     }
 
-    public void setBlogsCount(String blogsCount) {
-        this.blogCount = blogsCount;
+    public void setBlogCount(String blogCount) {
+        this.blogCount = blogCount;
     }
 
     public String getFansCount() {
@@ -107,47 +85,12 @@ public class Customer extends BaseModel {
         this.concernCount = concernCount;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public boolean isLogin() {
-        return login;
-    }
-
-    public void setLogin(boolean login) {
-        this.login = login;
-    }
-
-    public static Customer getInstance() {
-        if(customer == null){
-            customer = new Customer();
-        }
-        return customer;
-    }
-
     @Override
     public String toString() {
-        return "Customer{" +
+        return "Contact{" +
                 "id='" + id + '\'' +
-                ", sid='" + sid + '\'' +
-                ", account='" + account + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", introduction='" + introduction + '\'' +
-                ", cellNumber='" + cellNumber + '\'' +
-                ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", iconUrl='" + iconUrl + '\'' +
                 ", blogCount='" + blogCount + '\'' +

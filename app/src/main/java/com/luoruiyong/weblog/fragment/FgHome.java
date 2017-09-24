@@ -7,12 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.luoruiyong.weblog.R;
-import com.luoruiyong.weblog.adapter.MyFragmentAdapter;
+import com.luoruiyong.weblog.adapter.HomeFragmentPagerAdapter;
 import com.luoruiyong.weblog.model.Blog;
 import com.luoruiyong.weblog.ui.UiIndex;
 import com.luoruiyong.weblog.util.LogUtil;
@@ -31,7 +32,7 @@ public class FgHome extends Fragment {
     private PagerTabStrip pts_tab;
     private ArrayList<FgBlogsList> fragmentList ;
     private ArrayList<String> tabList;
-    private MyFragmentAdapter adapter;
+    private HomeFragmentPagerAdapter adapter;
 
     @Nullable
     @Override
@@ -45,6 +46,7 @@ public class FgHome extends Fragment {
     private void init() {
         vp_main = view.findViewById(R.id.main);
         pts_tab = view.findViewById(R.id.tab);
+        pts_tab.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
         FragmentManager manager = getActivity().getSupportFragmentManager();
         fragmentList = new ArrayList<>();
         fragmentList.add(new FgBlogsList());
@@ -54,7 +56,7 @@ public class FgHome extends Fragment {
         tabList.add("关注");
         pts_tab.setTabIndicatorColor(Color.BLUE);
         pts_tab.setDrawFullUnderline(false);
-        adapter = new MyFragmentAdapter(manager,fragmentList,tabList);
+        adapter = new HomeFragmentPagerAdapter(manager,fragmentList,tabList);
         vp_main.setAdapter(adapter);
         vp_main.addOnPageChangeListener(new MyOnPageChangeListener());
         LogUtil.d(CLASS_NAME+"成功添加碎片");
@@ -73,6 +75,22 @@ public class FgHome extends Fragment {
 
     public void initConcernBlogData(ArrayList<Blog> blogsList){
        fragmentList.get(1).initData(blogsList);
+    }
+
+    public void refreshDataSucceed(int page){
+        fragmentList.get(page).refreshDataSucceed();
+    }
+
+    public void refreshDataError(int page){
+        fragmentList.get(page).refreshDataError();
+    }
+
+    public void loadDataSucceed(int page){
+        fragmentList.get(page).loadDataSucceed();
+    }
+
+    public void loadDataError(int page){
+        fragmentList.get(page).loadDataError();
     }
 
     public void notifyPublicDataChange(){

@@ -107,7 +107,7 @@ public class IOUtil {
                                 //下载全屏缩略图，保存到另一个缓存区
                                 MemoryUtil.addFullScreenBitmap(pictureUrl,bitmap);
                             }else{
-                                //下载缩略图，保存到内存和本地cache目录下
+                                //下载其他缩略图，保存到内存和本地cache目录下
                                 MemoryUtil.addBitmap(pictureUrl,bitmap);
                                 SDUtil.saveCacheImage(context,bitmap,pictureUrl);
                             }

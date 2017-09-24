@@ -2,6 +2,8 @@ package com.luoruiyong.weblog.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
@@ -42,6 +44,12 @@ public class BaseUi extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.handler = new BaseHandler(this);
         this.taskPool = new BaseTaskPool(this);
+        if(Build.VERSION.SDK_INT >= 21){
+            //android5.0以上的系统，隐藏状态栏
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         DisplayMetrics dm = new DisplayMetrics();
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         WIDTH = dm.widthPixels;

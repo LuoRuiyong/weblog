@@ -11,6 +11,7 @@ import org.litepal.crud.DataSupport;
 public class BaseModel extends DataSupport {
     public final static String PACKAGE_NAME = "com.luoruiyong.weblog.model.";
     public final static String CUSTOMER = "Customer";
+    public final static String CONTACT = "Contact";
     public final static String BLOG = "Blog";
     public final static String BLOG_COMMENT = "BlogComment";
     public final static String BLOG_SHARE = "BlogShare";

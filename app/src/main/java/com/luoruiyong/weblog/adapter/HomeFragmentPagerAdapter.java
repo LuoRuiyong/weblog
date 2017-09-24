@@ -13,11 +13,11 @@ import java.util.ArrayList;
  * Created by Administrator on 2017/9/14.
  */
 
-public class MyFragmentAdapter extends FragmentPagerAdapter {
+public class HomeFragmentPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<String> tabList;
     private ArrayList<FgBlogsList> fragmentList;
 
-    public MyFragmentAdapter(FragmentManager fm, ArrayList<FgBlogsList> fragmentList, ArrayList<String> tabList) {
+    public HomeFragmentPagerAdapter(FragmentManager fm, ArrayList<FgBlogsList> fragmentList, ArrayList<String> tabList) {
         super(fm);
         this.fragmentList = fragmentList;
         this.tabList = tabList;

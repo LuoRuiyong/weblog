@@ -27,7 +27,9 @@ public class AppCache {
         Bitmap bitmap = MemoryUtil.getFullScreenBitmap(url);
         if(bitmap == null ){
             //内存中不存在，尝试联网从服务器获取（异步）
-            IOUtil.getBitmapRemote(context,C.task.getSampleFullScreenImage,url, BaseUi.WIDTH,BaseUi.HEIGHT);
+            if(context!=null){
+                IOUtil.getBitmapRemote(context,C.task.getSampleFullScreenImage,url, BaseUi.WIDTH,BaseUi.HEIGHT);
+            }
         }
         return  bitmap;
     }
@@ -47,7 +49,9 @@ public class AppCache {
             bitmap = SDUtil.getCacheImage(url);
             if(bitmap == null){
                 //本地不存在，尝试联网从服务器获取（异步）
-                IOUtil.getBitmapRemote(context,taskId,url);
+                if(context!= null){
+                    IOUtil.getBitmapRemote(context,taskId,url);
+                }
             }else{
                 //本地存在缓存，将资源添加到内存缓存中
                 MemoryUtil.addBitmap(url,bitmap);
@@ -68,7 +72,9 @@ public class AppCache {
         Bitmap bitmap= SDUtil.getDownLoadImage(url);
         if(bitmap == null){
             //本地不存在指定原图，尝试联网获取（异步）
-            IOUtil.getBitmapRemote(context,C.task.getOriginalImage,url);
+            if(context != null){
+                IOUtil.getBitmapRemote(context,C.task.getOriginalImage,url);
+            }
         }
         return  bitmap;
     }

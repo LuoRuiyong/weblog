@@ -39,6 +39,8 @@
             android:launchMode="singleTask"/>
         <activity android:name=".ui.UiWriteBlog"
             android:launchMode="singleTask"/>
+        <activity android:name=".ui.UiContactParticulars"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

@@ -67,6 +67,9 @@ public class C {
         public final static int getSampleCustomImage = 10032;
         public final static int getOriginalImage = 10033;
         public final static int getSampleFullScreenImage = 10034;
+        public final static int downPullRefreshData = 10035;
+        public final static int upPullRefreshData = 10036;
+        public final static int getContactInfo = 10037;
 
     }
 
@@ -125,6 +128,9 @@ public class C {
         public final static String modifyCustomerFace       = base + "customer/modifyCustomerFace";
         //所有待定接口都有test来暂时替代
         public final static String getContactIconUrl = test + "getUserIconUrlTest.php";   //待定
+        public final static String downPullRefreshData = test + "getUserIconUrlTest.php";   //待定
+        public final static String getContactInfo = test + "getContactInfo.php";   //待定
+        public final static String upPullRefreshData = test + "getUserIconUrlTest.php";   //待定
         public final static String checkAccount             = test;   //待定
         public final static String checkCellNumber          = test;   //待定
         public final static String checkEmail               = test;   //待定

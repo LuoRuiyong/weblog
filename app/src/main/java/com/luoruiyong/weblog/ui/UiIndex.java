@@ -1,6 +1,7 @@
 package com.luoruiyong.weblog.ui;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.luoruiyong.weblog.R;
-import com.luoruiyong.weblog.adapter.MyFragmentPagerAdapter;
+import com.luoruiyong.weblog.adapter.IndexFragmentPagerAdapter;
 import com.luoruiyong.weblog.base.BaseAuth;
 import com.luoruiyong.weblog.base.BaseMessage;
 import com.luoruiyong.weblog.base.BaseModel;
@@ -28,6 +29,7 @@ import com.luoruiyong.weblog.fragment.FgHome;
 import com.luoruiyong.weblog.fragment.FgMessage;
 import com.luoruiyong.weblog.fragment.FgProfile;
 import com.luoruiyong.weblog.model.Blog;
+import com.luoruiyong.weblog.myview.PullRefreshViewGroup;
 import com.luoruiyong.weblog.myview.SlideShowViewGroup;
 import com.luoruiyong.weblog.util.AppCache;
 import com.luoruiyong.weblog.util.IOUtil;
@@ -36,13 +38,15 @@ import com.luoruiyong.weblog.util.SDUtil;
 
 import java.util.ArrayList;
 
+import static com.luoruiyong.weblog.R.id.current_index;
+
 /**应用首页
  * Created by Administrator on 2017/9/9.
  */
 
 public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
         IOUtil.OnLoadPictureTaskListener,SlideShowViewGroup.OnImageChangedListener,
-        SlideShowViewGroup.OnClickImageListener{
+        SlideShowViewGroup.OnClickImageListener,PullRefreshViewGroup.OnRefreshDataListener{
     private static final String CLASS_NAME = UiIndex.class.getSimpleName() + "-->";
     private ViewPager vp_body ;
     private ImageView iv_home;
@@ -61,7 +65,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
     private SlideShowViewGroup vg_image;
 
     private ArrayList<Fragment> fragmentList;
-    private MyFragmentPagerAdapter adapter;
+    private IndexFragmentPagerAdapter adapter;
     private ArrayList<Blog> publicBlogsList;
     private ArrayList<Blog> concernedBlogsList;
 
@@ -82,12 +86,6 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogUtil.d(CLASS_NAME+"界面初始化");
-        if(Build.VERSION.SDK_INT >= 21){
-            //android5.0以上的系统，隐藏状态栏
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
         setContentView(R.layout.ui_index);
         bindControls();
         initFragment();
@@ -132,7 +130,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
         tv_message = (TextView) findViewById(R.id.label_message);
         tv_write_blog = (TextView) findViewById(R.id.label_write_blog);
         tv_profile = (TextView) findViewById(R.id.label_profile);
-        tv_current_index = (TextView) findViewById(R.id.current_index);
+        tv_current_index = (TextView) findViewById(current_index);
         tv_blog_content = (TextView) findViewById(R.id.blog_content);
         iv_save_image = (ImageView) findViewById(R.id.save_image);
         rl_progress_layout = (RelativeLayout) findViewById(R.id.layout_progressbar);
@@ -156,7 +154,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
         fragmentList.add(new FgHome());
         fragmentList.add(new FgMessage());
         fragmentList.add(new FgProfile());
-        adapter = new MyFragmentPagerAdapter(manager,fragmentList);
+        adapter = new IndexFragmentPagerAdapter(manager,fragmentList);
         vp_body.setAdapter(adapter);
         vp_body.setCurrentItem(0);
     }
@@ -208,6 +206,14 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
                     toast("数据加载失败");
                 }
                 break;
+            case C.task.downPullRefreshData:
+                ((FgHome)fragmentList.get(HOME_PAGE)).refreshDataSucceed(selectedHomePage);
+                toast("刷新成功");
+                break;
+            case C.task.upPullRefreshData:
+                toast("加载成功");
+                ((FgHome)fragmentList.get(HOME_PAGE)).loadDataSucceed(selectedHomePage);
+                break;
         }
         rl_progress_layout.setVisibility(View.GONE);
     }
@@ -220,6 +226,16 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
     @Override
     public void onNetworkError(int taskId, String errorInfo) {
         rl_progress_layout.setVisibility(View.GONE);
+        switch (taskId){
+            case C.task.downPullRefreshData:
+                ((FgHome)fragmentList.get(HOME_PAGE)).refreshDataError(selectedHomePage);
+                toast("刷新失败");
+                break;
+            case C.task.upPullRefreshData:
+                ((FgHome)fragmentList.get(HOME_PAGE)).loadDataError(selectedHomePage);
+                toast("加载失败");
+                break;
+        }
         LogUtil.d(CLASS_NAME+"远程任务失败，ID:"+taskId+"  原因："+errorInfo);
     }
 
@@ -280,8 +296,11 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
                            }
                            for (int i = 0; i < imageUrl.size(); i++) {
                                //更新图片显示
-                               ((ImageView)vg_image.getChildAt(i)).setImageBitmap(
-                                       AppCache.getFullScreenSampleImage(UiIndex.this,imageUrl.get(i)));
+                               Bitmap bitmap = AppCache.getFullScreenSampleImage(UiIndex.this,imageUrl.get(i));
+                               if(bitmap != null){
+                                   LogUtil.d(CLASS_NAME+"更新全屏图片");
+                                   ((ImageView)vg_image.getChildAt(i)).setImageBitmap(bitmap);
+                               }
                            }
                        }
                        break;
@@ -301,9 +320,10 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
      */
     @Override
     public void onItemClick(View view, int position) {
+        LogUtil.d(CLASS_NAME+"用户产生点击事件，回传到Activity");
         clickPosition = position;
-        int targetId;
-        int blogId;
+        String targetId;
+        String blogId;
         switch (view.getId()){
             case R.id.user_icon:
             case R.id.nickname:
@@ -315,7 +335,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
             case R.id.add_concern:
                 //点击关注，添加关注
                 targetId = getContactId(position);
-                int customerId = Integer.parseInt(BaseAuth.getCustomer().getId());
+                String customerId = BaseAuth.getCustomer().getId();
                 addConcern(customerId,targetId);
                 LogUtil.d(CLASS_NAME+"点击加关注，目标用户id："+targetId+"  我的id："+customerId);
                 break;
@@ -358,7 +378,17 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
             image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             image.setLayoutParams(params);
-            image.setImageBitmap(AppCache.getFullScreenSampleImage(UiIndex.this,url));
+            Bitmap bitmap = AppCache.getFullScreenSampleImage(UiIndex.this,url);
+            if(bitmap == null){
+                bitmap = AppCache.getSampleImage(UiIndex.this,C.task.getSampleBlogImage,url);
+                if(bitmap == null){
+                    image.setImageResource(R.drawable.blog_picture_default);
+                }else{
+                    image.setImageBitmap(bitmap);
+                }
+            }else{
+                image.setImageBitmap(bitmap);
+            }
             vg_image.addView(image);
         }
         browseImage = true;
@@ -381,28 +411,30 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
     }
 
     //点赞
-    private void praiseBlog(int blogId) {
+    private void praiseBlog(String blogId) {
 
     }
 
     //分享微博
-    private void shareBlog(int blogId) {
+    private void shareBlog(String blogId) {
 
     }
 
     //浏览微博
-    private void browseBlog(int blogId) {
+    private void browseBlog(String blogId) {
 
     }
 
     //加关注
-    private void addConcern(int id, int targetId) {
+    private void addConcern(String id, String targetId) {
 
     }
 
     //浏览用户
-    private void browseContact(int targetId) {
-
+    private void browseContact(String targetId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("contact_id",targetId);
+        overlay(UiContactParticulars.class,bundle);
     }
 
     /**
@@ -429,24 +461,24 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
      * @param position 指定的位置
      * @return 用户ID
      */
-    private int getContactId(int position){
+    private String getContactId(int position){
         String contactId = "";
         if(selectedPage == HOME_PAGE && selectedHomePage == PUBLIC_BLOGS_PAGE){
             contactId = publicBlogsList.get(position).getEditorId();
         }else if(selectedPage == HOME_PAGE && selectedHomePage == CONCERNED_BLOGS_PAGE){
             contactId = concernedBlogsList.get(position).getEditorId();
         }
-        return Integer.parseInt(contactId);
+        return contactId;
     }
 
-    private int getBlogId(int position){
+    private String getBlogId(int position){
         String blogId = "";
         if(selectedPage == HOME_PAGE && selectedHomePage == PUBLIC_BLOGS_PAGE){
             blogId = publicBlogsList.get(position).getId();
         }else if(selectedPage == HOME_PAGE && selectedHomePage == CONCERNED_BLOGS_PAGE){
             blogId = concernedBlogsList.get(position).getId();
         }
-        return Integer.parseInt(blogId);
+        return blogId;
     }
 
     /**
@@ -466,17 +498,17 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
     /**
      * 提供给自定义图片浏览类SlideShowViewGroup回调方法
      * 用户滑动浏览不同的图片时回调
-     * @param index  目标图片在当前微博中的标号
+     * @param selectedindex  目标图片在当前微博中的标号
      * @param total  当前微博的总图片数目
      */
     @Override
-    public void onImageChanged(final int index, final int total) {
+    public void onImageChanged(final int selectedindex, final int total) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 //更新指示页头
-                int current_index = index + 1;
-                tv_current_index.setText(current_index+"/"+total);
+                index = selectedindex;
+                tv_current_index.setText((index+1)+"/"+total);
             }
         });
     }
@@ -496,6 +528,18 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
                 fl_browse_image_layout.setVisibility(View.GONE);
             }
         });
+    }
+
+    @Override
+    public void onDownPullRefreshData() {
+        LogUtil.d(CLASS_NAME+"下拉刷新");
+        doAsyncTask(C.task.downPullRefreshData,C.api.downPullRefreshData,0);
+    }
+
+    @Override
+    public void onUpPullLoadData() {
+        LogUtil.d(CLASS_NAME+"上拉加载");
+        doAsyncTask(C.task.upPullRefreshData,C.api.upPullRefreshData,0);
     }
 
     /**
@@ -549,6 +593,7 @@ public class UiIndex extends BaseUi implements FgBlogsList.OnItemClickListener,
             IOUtil.getBitmapRemote(UiIndex.this,C.task.getOriginalImage,url);
         }
     }
+
 
     //功能按钮状态恢复正常
     private void setNormal(int oldSelectedItem){

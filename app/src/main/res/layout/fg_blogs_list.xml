@@ -6,10 +6,28 @@
     android:layout_height="match_parent"
     android:background="#eeeeee">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/blogs_list"
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/down_pull_refresh"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/blogs_list"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+        <!--</android.support.v7.widget.RecyclerView>-->
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+    <com.luoruiyong.weblog.myview.PullRefreshViewGroup
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/blogs_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </com.luoruiyong.weblog.myview.PullRefreshViewGroup>
+
 
 </LinearLayout>

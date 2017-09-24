@@ -26,7 +26,7 @@ public class BaseAuth {
         customer.setAccount(cus.getAccount());
         customer.setNickName(cus.getNickName());
         customer.setIconUrl(cus.getIconUrl());
-        customer.setSignText(cus.getSignText());
+        customer.setIntroduction(cus.getIntroduction());
         customer.setCellNumber(cus.getCellNumber());
         customer.setEmail(cus.getEmail());
         customer.setAddress(cus.getAddress());

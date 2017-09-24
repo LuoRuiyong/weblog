@@ -350,7 +350,7 @@ public class UiLogin extends BaseUi implements IOUtil.OnLoadPictureTaskListener{
         LogUtil.d(CLASS_NAME+ errorInfo);
         rl_progressbar_layout.setVisibility(View.GONE);
         if(taskId == C.task.login){
-            toast(errorInfo);
+            toast(C.err.network);
         }
     }
 

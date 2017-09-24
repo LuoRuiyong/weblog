@@ -40,8 +40,8 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="80dp"
-        android:layout_height="36dp"
+        android:layout_width="75dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:padding="1dp"
@@ -49,8 +49,8 @@
 
         <TextView
         android:id="@+id/add_concern"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:drawableLeft="@drawable/add_concern"
         android:paddingLeft="5dp"
@@ -63,20 +63,20 @@
 
     <RelativeLayout
         android:id="@+id/concerned"
-        android:layout_width="80dp"
-        android:layout_height="36dp"
+        android:layout_width="75dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:padding="1dp"
         android:background="#aaaaaa"
         android:visibility="gone">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:drawableLeft="@drawable/concerned"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:background="@drawable/normal_background"
             android:textColor="#555555"
             android:textSize="16sp"
